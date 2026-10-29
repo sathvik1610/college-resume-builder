@@ -141,7 +141,7 @@ export function blankResume(name?: string): Resume {
     name: name || 'My resume',
     updated: Date.now(),
     settings: {
-      template: 'classic', paper: 'A4', fontSize: 10.5, margin: 0.5,
+      template: 'classic', paper: 'A4', fontSize: 10, margin: 0.5,
       linkStyle: 'label', showLogo: true, titles: {}, order: DEFAULT_ORDER.slice(),
     },
     basics: Object.fromEntries(BASICS.map(f => [f.k, ''])),
@@ -221,13 +221,14 @@ export function sample(): Resume {
     { role: 'Software Development Intern', org: 'Company Name', location: '', start: 'Jun 2025', end: 'Jul 2025',
       bullets: 'Fixed **18 front-end defects** in the customer dashboard, reducing open UI tickets by **a third**.\nWrote **40 unit tests** with Jest, raising coverage on the billing module from **52% to 78%**.\nBuilt an internal reporting page with React and a REST endpoint, used by **15+ support staff** every week.' },
     { role: 'Teaching Assistant, Data Structures', org: 'Your College Name', location: '', start: 'Jan 2025', end: 'May 2025',
-      bullets: 'Ran weekly lab sessions for **60 second-year students** and graded **200+** assignments with written feedback.' },
+      bullets: 'Ran weekly lab sessions for **60 second-year students** and graded **200+** assignments with written feedback.\nPrepared practice sets on trees and graphs, used by the whole batch before the end-semester exam.' },
   ]
   r.certifications = [
     { name: 'Cloud Fundamentals Certification', issuer: 'Issuing Body', date: '2024' },
     { name: 'Programming Course Certificate', issuer: 'Platform Name', date: '2023' },
+    { name: 'Database Systems Specialisation', issuer: 'Platform Name', date: '2023' },
   ]
-  r.achievements = 'Finalist, inter-college hackathon, 2024, among **120 teams**.\nTop **5%** in an online coding contest series, 2024.'
+  r.achievements = 'Finalist, inter-college hackathon, 2024, among **120 teams**.\nTop **5%** in an online coding contest series, 2024.\nAwarded a merit scholarship for ranking in the **top 10** of the department in 2023.'
   r.leadership = [
     { role: 'Technical Lead', org: 'Coding Club', location: '', start: '2024', end: 'Present',
       bullets: 'Run weekly problem-solving sessions for about **60 first-year students**.' },
