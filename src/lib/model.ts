@@ -21,7 +21,7 @@ export interface SectionDef {
 }
 
 export type SectionKey =
-  | 'summary' | 'education' | 'skills' | 'projects' | 'experience'
+  | 'summary' | 'education' | 'coursework' | 'skills' | 'projects' | 'experience'
   | 'leadership' | 'certifications' | 'achievements'
 
 export interface Settings {
@@ -45,6 +45,7 @@ export interface Resume {
   basics: Record<string, string>
   links: LinkItem[]
   summary: string
+  coursework: string
   achievements: string
   education: Item[]
   skills: Item[]
@@ -84,6 +85,8 @@ export const SECTIONS: Record<SectionKey, SectionDef> = {
     { k: 'end', l: 'End or expected', ph: 'May 2026' },
     { k: 'details', l: 'Relevant coursework (optional)', w: 'full', t: 'area', rows: 2 },
   ] },
+  coursework: { title: 'Coursework', kind: 'text', rows: 3,
+    hint: 'Key courses, separated by commas. Pick the ones that matter for the role.' },
   skills: { title: 'Skills', kind: 'list', hint: 'One row per group, for example Languages, Tools, Databases.', fields: [
     { k: 'label', l: 'Group', ph: 'Languages' },
     { k: 'items', l: 'Skills (comma separated)', ph: 'Python, Java, C, SQL' },
@@ -122,7 +125,7 @@ export const SECTIONS: Record<SectionKey, SectionDef> = {
 }
 
 export const DEFAULT_ORDER: SectionKey[] = [
-  'summary', 'education', 'skills', 'projects', 'experience', 'certifications', 'achievements', 'leadership',
+  'summary', 'education', 'coursework', 'skills', 'projects', 'experience', 'certifications', 'achievements', 'leadership',
 ]
 
 export const blankItem = (key: SectionKey): Item =>
@@ -139,12 +142,13 @@ export function blankResume(name?: string): Resume {
     name: name || 'My resume',
     updated: Date.now(),
     settings: {
-      template: 'classic', paper: 'A4', fontSize: 11, margin: 0.5,
+      template: 'classic', paper: 'A4', fontSize: 10.5, margin: 0.5,
       linkStyle: 'label', showLogo: true, titles: {}, order: DEFAULT_ORDER.slice(),
     },
     basics: Object.fromEntries(BASICS.map(f => [f.k, ''])),
     links: [{ label: 'LinkedIn', url: '' }, { label: 'GitHub', url: '' }],
     summary: '',
+    coursework: '',
     achievements: '',
     education: [{ ...blankItem('education'), school: COLLEGE.name, location: COLLEGE.location }],
     skills: ['Languages', 'Frameworks and tools', 'Databases'].map(label => ({ label, items: '' })),
@@ -195,8 +199,7 @@ export function sample(): Resume {
   r.links = [{ label: 'LinkedIn', url: 'linkedin.com/in/your-id' }, { label: 'GitHub', url: 'github.com/your-id' }]
   r.education = [
     { school: COLLEGE.name, location: COLLEGE.location, degree: 'B.Tech in Computer Science and Engineering',
-      score: 'CGPA: 8.6/10', start: 'Aug 2022', end: 'May 2026',
-      details: 'Data Structures, Operating Systems, DBMS, Computer Networks, Machine Learning' },
+      score: 'CGPA: 8.6/10', start: 'Aug 2022', end: 'May 2026', details: '' },
     { school: 'Your Junior College', location: 'City, State', degree: 'Intermediate (MPC)',
       score: '97.2%', start: '2020', end: '2022', details: '' },
   ]
@@ -219,6 +222,7 @@ export function sample(): Resume {
     { name: 'Cloud Fundamentals Certification', issuer: 'Issuing Body', date: '2024' },
     { name: 'Programming Course Certificate', issuer: 'Platform Name', date: '2023' },
   ]
+  r.coursework = 'Data Structures and Algorithms, Operating Systems, DBMS, Computer Networks, Machine Learning, Software Engineering'
   r.achievements = 'Finalist, inter-college hackathon, 2024.\nTop 5% in an online coding contest series, 2024.'
   r.leadership = [
     { role: 'Technical Lead', org: 'Coding Club', location: '', start: '2024', end: 'Present',

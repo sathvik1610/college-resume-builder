@@ -18,6 +18,7 @@ export function toText(r: Resume): string {
   for (const key of r.settings.order as SectionKey[]) {
     const block: string[] = []
     if (key === 'summary' && r.summary.trim()) block.push(plain(r.summary.trim()))
+    if (key === 'coursework' && r.coursework.trim()) block.push(plain(r.coursework.trim()))
     if (key === 'achievements') lines(r.achievements).forEach(x => block.push('- ' + x))
     if (key === 'skills') r.skills.filter(x => x.items.trim()).forEach(x => block.push(`${x.label}: ${x.items}`))
     if (key === 'education') r.education.filter(has).forEach(e =>

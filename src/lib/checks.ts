@@ -19,7 +19,8 @@ export function runChecks(r: Resume, pages: number): Check[] {
   add(r.skills.some(s => s.items.trim()), 'Skills listed', 'List your skills so keyword scans can find them')
   add(r.projects.some(p => lines(p.bullets).length > 0) || r.experience.some(e => lines(e.bullets).length > 0),
     'Projects or experience described', 'Describe at least one project or internship with bullets')
-  add(pages === 1, 'Fits on one page', `Runs to ${pages} pages. A fresher resume should be one page`)
+  add(pages <= 2, pages === 1 ? 'Fits on one page' : 'Two pages is fine when the content needs it',
+    `Runs to ${pages} pages. Try to keep it to two or fewer`)
 
   const long = allBullets.filter(b => wordCount(b) > 30).length
   add(long === 0, 'Bullets are short enough', `${long} bullet${long > 1 ? 's are' : ' is'} over 30 words. Split or trim`)

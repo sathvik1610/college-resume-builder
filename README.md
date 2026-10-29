@@ -7,10 +7,11 @@ Built with React, TypeScript, Tailwind CSS and [shadcn/ui](https://ui.shadcn.com
 ## What it does
 
 - Two templates: Classic (LaTeX style, Computer Modern font) and Modern (sans-serif). Both are single column with real text headings. No tables, icons, photos or graphics.
-- Sections for students: Education, Skills, Projects, Internships, Certifications, Achievements, Leadership. Reorder them, rename their headings, and empty ones disappear.
+- Sections for students: Education, Coursework, Skills, Projects, Internships, Certifications, Achievements, Leadership. Reorder them, rename their headings, and empty ones disappear.
 - Any number of header links (LinkedIn, GitHub, portfolio, Scholar, LeetCode...).
 - College logo in the header: official logo by default, or upload another.
-- Live preview with page counter, A4 or US Letter.
+- Live preview with real page breaks (multi-page resumes), zoom in/out, page counter, A4 or US Letter.
+- Light and dark mode.
 - Resume check: missing contact details, over one page, long bullets, bullets without numbers.
 - Several resumes per browser. Autosaves to `localStorage`. Export and import JSON backups, or export plain text.
 - Installable and works offline after the first visit (service worker via `vite-plugin-pwa`).

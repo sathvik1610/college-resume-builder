@@ -10,12 +10,12 @@ import {
   type PDFFont, type PDFImage, type PDFPage, type PDFRef,
 } from 'pdf-lib'
 import type { Resume } from './model'
+import { blockOf, paginate } from './paginate'
 import { PAPER, resumeHTML } from './render'
 
 export interface PdfFontUrls { regular: string; bold: string; italic: string; boldItalic: string }
 
 const PT = 0.75 // CSS px -> PDF points
-const BLOCKS = 'h1,h2,.row,li,p,header'
 
 interface Atom {
   text: string
@@ -74,24 +74,10 @@ export async function makePdfBlob(r: Resume, userLogo: string | undefined, fonts
       : new Promise<void>(res => { i.onload = i.onerror = () => res() }))))
     const ar = page.getBoundingClientRect()
 
-    /* 2. Decide which page every block lands on (blocks never split across pages). */
-    const blocks = [...page.querySelectorAll(BLOCKS)]
-    const shift = new Map<Element, number>()
-    let offset = 0
-    blocks.forEach((b, i) => {
-      const rc = b.getBoundingClientRect()
-      const top = rc.top - ar.top, bottom = rc.bottom - ar.top
-      let need = bottom
-      if (b.tagName === 'H2' && blocks[i + 1]) need = blocks[i + 1].getBoundingClientRect().bottom - ar.top
-      const pg = Math.floor((top + offset + 0.01) / paper.h)
-      const limit = (pg + 1) * paper.h - margin
-      if (need + offset > limit + 0.5 && top + offset > pg * paper.h + margin + 1) {
-        offset = (pg + 1) * paper.h + margin - top
-      }
-      shift.set(b, offset)
-    })
+    /* 2. Decide which page every block lands on (shared with the preview). */
+    const { shift } = paginate(page, paper.h, margin)
     const shiftOf = (el: Element | null) => {
-      const b = el?.closest(BLOCKS)
+      const b = blockOf(el)
       return (b && shift.get(b)) ?? 0
     }
 
@@ -132,7 +118,7 @@ export async function makePdfBlob(r: Resume, userLogo: string | undefined, fonts
       const color = parseColor(cs.color)
       const smallCaps = cs.fontVariantCaps === 'small-caps'
       const spaced = cs.letterSpacing !== 'normal' && parseFloat(cs.letterSpacing) > 0
-      const block = el.closest(BLOCKS) ?? el
+      const block = blockOf(el) ?? el
       const text = n.data
       let cur: Atom | null = null
       let lastRight = 0

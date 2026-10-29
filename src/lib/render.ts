@@ -89,6 +89,7 @@ export function resumeHTML(r: Resume, userLogo?: string): string {
       })
       return l.length ? `<ul>${l.join('')}</ul>` : ''
     },
+    coursework: () => r.coursework.trim() ? `<p>${richHtml(r.coursework.trim())}</p>` : '',
     achievements: () => bullets(r.achievements),
   }
 

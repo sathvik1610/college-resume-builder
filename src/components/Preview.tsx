@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { Maximize2, Minus, Plus } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import type { Resume } from '@/lib/model'
+import { paginate } from '@/lib/paginate'
 import { PAPER, resumeHTML } from '@/lib/render'
 
 interface Props {
@@ -9,30 +12,52 @@ interface Props {
   onPages: (n: number) => void
 }
 
+const GAP = 18            // px of space shown between pages in the preview
+const MIN = 0.4, MAX = 2  // zoom limits (1 = actual paper size)
+
 export function Preview({ resume, logo, onPages }: Props) {
   const wrapRef = useRef<HTMLElement>(null)
   const holderRef = useRef<HTMLDivElement>(null)
   const pageRef = useRef<HTMLElement>(null)
   const [pages, setPages] = useState(1)
+  const [zoom, setZoom] = useState<number | 'fit'>('fit')
+  const [scale, setScale] = useState(1)
   const s = resume.settings
   const html = useMemo(() => resumeHTML(resume, logo), [resume, logo])
 
-  // Scale the page to the pane and count pages.
+  // Lay the pages out (same rules as the PDF), then scale to the chosen zoom.
   const measure = useCallback(() => {
     const wrap = wrapRef.current, holder = holderRef.current, el = pageRef.current
     if (!wrap || !holder || !el) return
     const p = PAPER[s.paper] ?? PAPER.A4
-    const m = s.margin * 96
-    const avail = wrap.clientWidth - 50
-    const scale = avail > 0 ? Math.min(1, avail / p.w) : 1
-    const h = Math.max(p.h, el.scrollHeight)
-    el.style.transform = scale < 1 ? `scale(${scale})` : 'none'
-    holder.style.width = p.w * scale + 'px'
-    holder.style.height = h * scale + 'px'
-    const n = Math.max(1, Math.ceil((el.scrollHeight - 2 * m - 1) / (p.h - 2 * m)))
+    const margin = s.margin * 96
+
+    el.style.transform = 'none'
+    el.style.height = ''
+    const blocks = el.querySelectorAll<HTMLElement>('h1,h2,.row,li,p,header')
+    blocks.forEach(b => { b.style.translate = '' })
+
+    const { shift, pages: n } = paginate(el, p.h, margin)
+    const ar = el.getBoundingClientRect()
+    blocks.forEach(b => {
+      const dy = shift.get(b) ?? 0
+      const top = b.getBoundingClientRect().top - ar.top
+      const pg = Math.floor((top + dy + 0.01) / p.h)
+      const total = dy + pg * GAP
+      if (total) b.style.translate = `0 ${total}px`
+    })
+    const H = n * p.h + (n - 1) * GAP
+    el.style.height = H + 'px'
+
+    const fit = Math.max(MIN, Math.min(1, (wrap.clientWidth - 50) / p.w))
+    const sc = zoom === 'fit' ? fit : zoom
+    el.style.transform = sc === 1 ? 'none' : `scale(${sc})`
+    holder.style.width = p.w * sc + 'px'
+    holder.style.height = H * sc + 'px'
+    setScale(sc)
     setPages(n)
     onPages(n)
-  }, [s.paper, s.margin, onPages])
+  }, [s.paper, s.margin, zoom, onPages])
 
   useLayoutEffect(measure, [measure, html, s.fontSize, s.template])
 
@@ -45,28 +70,30 @@ export function Preview({ resume, logo, onPages }: Props) {
     return () => ro.disconnect()
   }, [measure])
 
-  // The print dialog takes its page size and margins from here.
-  useEffect(() => {
-    let el = document.getElementById('pagestyle')
-    if (!el) { el = document.createElement('style'); el.id = 'pagestyle'; document.head.appendChild(el) }
-    el.textContent = `@page{size:${s.paper === 'Letter' ? 'letter' : 'A4'};margin:${s.margin}in}`
-  }, [s.paper, s.margin])
-
   const p = PAPER[s.paper] ?? PAPER.A4
   const style = {
     '--pw': p.w + 'px', '--ph': p.h + 'px', '--m': s.margin + 'in', '--fs': s.fontSize + 'pt',
+    // white pages with a gap between them; the gap shows the surface behind
+    background: `repeating-linear-gradient(to bottom, #fff 0, #fff ${p.h}px, transparent ${p.h}px, transparent ${p.h + GAP}px)`,
+    filter: 'drop-shadow(0 1px 3px rgba(0,0,0,.28)) drop-shadow(0 6px 14px rgba(0,0,0,.12))',
   } as CSSProperties
 
+  const step = (d: number) => setZoom(Math.min(MAX, Math.max(MIN, Math.round((scale + d) * 10) / 10)))
+
   return (
-    <section ref={wrapRef} aria-label="Resume preview"
-      className="h-full min-h-0 overflow-auto bg-muted px-6 pb-12 print:h-auto print:overflow-visible print:bg-white print:p-0">
-      <div className="sticky top-0 z-10 -mx-6 mb-3 flex flex-wrap items-center justify-between gap-2 border-b bg-muted/90 px-6 py-2.5 text-sm backdrop-blur print:hidden">
-        <Badge variant={pages > 1 ? 'destructive' : 'secondary'}>
+    <section ref={wrapRef} aria-label="Resume preview" className="h-full min-h-0 overflow-auto bg-muted px-6 pb-12">
+      <div className="sticky top-0 z-10 -mx-6 mb-4 flex flex-wrap items-center justify-between gap-2 border-b bg-muted/90 px-6 py-2 backdrop-blur">
+        <Badge variant={pages > 2 ? 'destructive' : 'secondary'}>
           {pages} {pages === 1 ? 'page' : 'pages'} · {s.paper}
         </Badge>
-        <span className="text-xs text-muted-foreground">The red line marks where a page ends (approximate)</span>
+        <div className="flex items-center gap-1" role="group" aria-label="Zoom">
+          <Button variant="outline" size="icon-sm" aria-label="Zoom out" onClick={() => step(-0.1)} disabled={scale <= MIN}><Minus /></Button>
+          <span className="w-12 text-center text-sm tabular-nums" aria-live="polite">{Math.round(scale * 100)}%</span>
+          <Button variant="outline" size="icon-sm" aria-label="Zoom in" onClick={() => step(0.1)} disabled={scale >= MAX}><Plus /></Button>
+          <Button variant={zoom === 'fit' ? 'secondary' : 'outline'} size="sm" className="ml-1" onClick={() => setZoom('fit')}><Maximize2 /> Fit</Button>
+        </div>
       </div>
-      <div id="page-holder" ref={holderRef} className="mx-auto bg-white shadow-lg ring-1 ring-black/10">
+      <div id="page-holder" ref={holderRef} className="mx-auto">
         <article id="resume" ref={pageRef} className={`page t-${s.template}`} style={style}
           dangerouslySetInnerHTML={{ __html: html }} />
       </div>

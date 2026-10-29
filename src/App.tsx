@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { Copy, Download, FilePlus2, Loader2, Pencil, Trash2 } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { Copy, Download, FilePlus2, Loader2, Moon, Pencil, Sun, Trash2 } from 'lucide-react'
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -29,6 +29,17 @@ export default function App() {
   const [dlg, setDlg] = useState<Dlg>(null)
   const [nameDraft, setNameDraft] = useState('')
   const [busy, setBusy] = useState(false)
+  const [dark, setDark] = useState(() => {
+    try {
+      const v = localStorage.getItem('crb:theme')
+      if (v) return v === 'dark'
+    } catch { /* storage blocked: follow the system setting */ }
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false
+  })
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', dark)
+    try { localStorage.setItem('crb:theme', dark ? 'dark' : 'light') } catch { /* ignore */ }
+  }, [dark])
 
   const checks = useMemo(() => runChecks(resume, pages), [resume, pages])
   const logo = logoSrc(db.logo)
@@ -93,15 +104,24 @@ export default function App() {
 
   return (
     <div className="flex h-full flex-col print:block print:h-auto">
-      <header className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 bg-primary px-4 py-2.5 text-primary-foreground sm:px-5 print:hidden">
-        {logo && <img src={logo} alt="" className="h-11 w-auto max-w-16 rounded-md bg-white object-contain p-1" />}
-        <div className="leading-tight">
-          <h1 className="text-lg font-bold tracking-tight">Resume Builder</h1>
-          <p className="text-[13px] opacity-85">{COLLEGE.name}</p>
+      <header className="grid shrink-0 grid-cols-1 items-center gap-x-4 gap-y-2 bg-header px-4 py-3 text-primary-foreground sm:grid-cols-[1fr_auto_1fr] sm:px-5 print:hidden">
+        <div className="order-2 hidden min-w-0 sm:order-1 sm:block">
+          <span role="status" aria-live="polite" className="text-[13px] opacity-80">{saveText}</span>
         </div>
-        <div className="ml-auto flex items-center gap-3">
-          <span role="status" aria-live="polite" className="hidden text-[13px] opacity-85 sm:inline">{saveText}</span>
-          <Button variant="secondary" onClick={savePdf} disabled={busy} className="font-semibold text-primary">
+        <div className="order-1 flex items-center justify-center gap-3.5 sm:order-2">
+          {logo && <img src={logo} alt="" className="h-12 w-auto max-w-[4.5rem] rounded-md bg-white object-contain p-1" />}
+          <div className="text-left leading-tight">
+            <h1 className="font-display text-[1.35rem] font-bold tracking-tight">Resume Builder</h1>
+            <p className="mt-0.5 text-[13px] tracking-wide opacity-85">{COLLEGE.name}</p>
+          </div>
+        </div>
+        <div className="order-3 flex items-center justify-center gap-2 sm:justify-end">
+          <Button variant="ghost" size="icon" aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={dark ? 'Light mode' : 'Dark mode'} onClick={() => setDark(d => !d)}
+            className="text-primary-foreground hover:bg-white/15 hover:text-primary-foreground">
+            {dark ? <Sun /> : <Moon />}
+          </Button>
+          <Button onClick={savePdf} disabled={busy} className="bg-white font-semibold text-[oklch(0.4_0.14_25)] hover:bg-white/90">
             {busy ? <Loader2 className="animate-spin" /> : <Download />} {busy ? 'Preparing…' : 'Download PDF'}
           </Button>
         </div>

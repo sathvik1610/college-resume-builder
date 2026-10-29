@@ -25,17 +25,6 @@
   -webkit-font-smoothing: antialiased;
 }
 
-/* page-end marker, preview only */
-.page::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(to bottom,
-    transparent 0, transparent calc(var(--ph) - 2px),
-    rgba(200, 50, 50, .55) calc(var(--ph) - 2px), rgba(200, 50, 50, .55) var(--ph));
-}
-
 /* header */
 .page header { position: relative; text-align: center; padding-top: 2pt; }
 .page h1 {
@@ -88,22 +77,12 @@
 
 /* Modern: sans-serif, left aligned, navy accents */
 .page.t-modern {
+  --ra: #8b1a1a;
   --ff: Arial, Helvetica, "Liberation Sans", sans-serif;
   font-size: calc(var(--fs) - .75pt);
   line-height: 1.28;
 }
 .page.t-modern header { text-align: left; }
-.page.t-modern h1 { font-size: 2em; font-weight: 700; font-variant: normal; color: var(--accent, #1f3a5f); letter-spacing: -.01em; }
-.page.t-modern h2 { font-variant: normal; text-transform: uppercase; letter-spacing: .06em; font-size: .95em; color: var(--accent, #1f3a5f); border-bottom: 1pt solid var(--accent, #1f3a5f); }
+.page.t-modern h1 { font-size: 2em; font-weight: 700; font-variant: normal; color: var(--ra); letter-spacing: -.01em; }
+.page.t-modern h2 { font-variant: normal; text-transform: uppercase; letter-spacing: .06em; font-size: .95em; color: var(--ra); border-bottom: 1pt solid var(--ra); }
 .page.t-modern .logo { left: auto; right: 0; }
-
-@media print {
-  .page {
-    width: auto !important;
-    min-height: 0 !important;
-    padding: 0 !important;
-    transform: none !important;
-    box-shadow: none !important;
-  }
-  .page::after { display: none; }
-}

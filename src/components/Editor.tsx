@@ -226,11 +226,11 @@ export function Editor({ db, resume: r, update, checks }: Props) {
         <Accordion multiple defaultValue={['checks', 'contact', 'education']}>
 
           <Section value="checks" label="Resume check"
-            extra={<Badge variant={fixes ? 'outline' : 'secondary'} className={cn('mr-2', fixes ? 'text-amber-700' : 'text-emerald-700')}>{fixes ? `${fixes} to fix` : 'All clear'}</Badge>}>
+            extra={<Badge variant={fixes ? 'outline' : 'secondary'} className={cn('mr-2', fixes ? 'text-amber-700 dark:text-amber-400' : 'text-emerald-700 dark:text-emerald-400')}>{fixes ? `${fixes} to fix` : 'All clear'}</Badge>}>
             <ul className="grid gap-1.5">
               {checks.map(c => (
                 <li key={c.text} className="flex items-start gap-2.5 text-sm">
-                  <span className={cn('mt-0.5 w-8 shrink-0 text-[11px] font-bold tracking-wide uppercase', c.ok ? 'text-emerald-700' : 'text-amber-700')}>{c.ok ? 'OK' : 'Fix'}</span>
+                  <span className={cn('mt-0.5 w-8 shrink-0 text-[11px] font-bold tracking-wide uppercase', c.ok ? 'text-emerald-700 dark:text-emerald-400' : 'text-amber-700 dark:text-amber-400')}>{c.ok ? 'OK' : 'Fix'}</span>
                   <span className={cn(!c.ok && 'font-medium')}>{c.text}</span>
                 </li>
               ))}
