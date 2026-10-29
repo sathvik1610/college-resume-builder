@@ -320,7 +320,7 @@
     add(wordCount(r.summary) <= 60, 'Summary length is fine', 'Summary is over 60 words. Shorten it');
 
     const bad = out.filter(c => !c.ok).length;
-    $('#checks').innerHTML = out.map(c => `<li class="${c.ok ? 'ok' : 'bad'}"><span class="mk">${c.ok ? '✓' : '!'}</span><span>${esc(c.text)}</span></li>`).join('');
+    $('#checks').innerHTML = out.map(c => `<li class="${c.ok ? 'ok' : 'bad'}"><span class="mk">${c.ok ? 'OK' : 'Fix'}</span><span>${esc(c.text)}</span></li>`).join('');
     const badge = $('#check-badge');
     badge.textContent = bad ? bad + ' to fix' : 'All clear';
     badge.classList.toggle('warn', bad > 0);
