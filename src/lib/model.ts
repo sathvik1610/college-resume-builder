@@ -83,7 +83,6 @@ export const SECTIONS: Record<SectionKey, SectionDef> = {
     { k: 'score', l: 'CGPA / Percentage', ph: 'CGPA: 8.4/10' },
     { k: 'start', l: 'Start', ph: 'Aug 2022' },
     { k: 'end', l: 'End or expected', ph: 'May 2026' },
-    { k: 'details', l: 'Relevant coursework (optional)', w: 'full', t: 'area', rows: 2 },
   ] },
   coursework: { title: 'Coursework', kind: 'text', rows: 3,
     hint: 'Key courses, separated by commas. Pick the ones that matter for the role.' },
@@ -199,9 +198,9 @@ export function sample(): Resume {
   r.links = [{ label: 'LinkedIn', url: 'linkedin.com/in/your-id' }, { label: 'GitHub', url: 'github.com/your-id' }]
   r.education = [
     { school: COLLEGE.name, location: COLLEGE.location, degree: 'B.Tech in Computer Science and Engineering',
-      score: 'CGPA: 8.6/10', start: 'Aug 2022', end: 'May 2026', details: '' },
+      score: 'CGPA: 8.6/10', start: 'Aug 2022', end: 'May 2026' },
     { school: 'Your Junior College', location: 'City, State', degree: 'Intermediate (MPC)',
-      score: '97.2%', start: '2020', end: '2022', details: '' },
+      score: '97.2%', start: '2020', end: '2022' },
   ]
   r.skills = [
     { label: 'Languages', items: 'Python, Java, C, SQL, JavaScript' },

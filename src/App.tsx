@@ -104,15 +104,15 @@ export default function App() {
 
   return (
     <div className="flex h-full flex-col print:block print:h-auto">
-      <header className="grid shrink-0 grid-cols-1 items-center gap-x-4 gap-y-2 bg-header px-4 py-3 text-primary-foreground sm:grid-cols-[1fr_auto_1fr] sm:px-5 print:hidden">
+      <header className="grid shrink-0 grid-cols-1 items-center gap-x-4 gap-y-2 bg-header px-4 py-2 text-primary-foreground sm:grid-cols-[1fr_auto_1fr] sm:px-5 sm:py-3 print:hidden">
         <div className="order-2 hidden min-w-0 sm:order-1 sm:block">
           <span role="status" aria-live="polite" className="text-[13px] opacity-80">{saveText}</span>
         </div>
         <div className="order-1 flex items-center justify-center gap-3.5 sm:order-2">
-          {logo && <img src={logo} alt="" className="h-12 w-auto max-w-[4.5rem] rounded-md bg-white object-contain p-1" />}
+          {logo && <img src={logo} alt="" className="h-10 w-auto max-w-[3.75rem] rounded-md bg-white object-contain p-1 sm:h-12 sm:max-w-[4.5rem]" />}
           <div className="text-left leading-tight">
-            <h1 className="font-display text-[1.35rem] font-bold tracking-tight">Resume Builder</h1>
-            <p className="mt-0.5 text-[13px] tracking-wide opacity-85">{COLLEGE.name}</p>
+            <h1 className="font-display text-lg font-bold tracking-tight sm:text-[1.35rem]">Resume Builder</h1>
+            <p className="mt-0.5 text-xs tracking-wide opacity-85 sm:text-[13px]">{COLLEGE.name}</p>
           </div>
         </div>
         <div className="order-3 flex items-center justify-center gap-2 sm:justify-end">
@@ -127,32 +127,32 @@ export default function App() {
         </div>
       </header>
 
-      <div className="flex shrink-0 flex-wrap items-center gap-2 border-b bg-card px-4 py-2 sm:px-5 print:hidden">
+      <div className="flex shrink-0 items-center gap-2 border-b bg-card px-4 py-2 sm:px-5 print:hidden">
         <Select value={db.current} items={list.map(r => ({ value: r.id, label: r.name }))}
           onValueChange={v => v && mutateDb(d => { d.current = v })}>
-          <SelectTrigger className="w-52" aria-label="Choose resume"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="min-w-0 flex-1 sm:w-52 sm:flex-none" aria-label="Choose resume"><SelectValue /></SelectTrigger>
           <SelectContent>
             {list.map(r => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
           </SelectContent>
         </Select>
-        <Button variant="outline" onClick={() => open('new')}><FilePlus2 /> New</Button>
-        <Button variant="outline" onClick={duplicate}><Copy /> Duplicate</Button>
-        <Button variant="outline" onClick={() => open('rename')}><Pencil /> Rename</Button>
-        <Button variant="outline" className="text-destructive hover:text-destructive" onClick={() => open('delete')}><Trash2 /> Delete</Button>
+        <Button variant="outline" aria-label="New resume" onClick={() => open('new')}><FilePlus2 /><span className="hidden sm:inline">New</span></Button>
+        <Button variant="outline" aria-label="Duplicate resume" onClick={duplicate}><Copy /><span className="hidden sm:inline">Duplicate</span></Button>
+        <Button variant="outline" aria-label="Rename resume" onClick={() => open('rename')}><Pencil /><span className="hidden sm:inline">Rename</span></Button>
+        <Button variant="outline" aria-label="Delete resume" className="text-destructive hover:text-destructive" onClick={() => open('delete')}><Trash2 /><span className="hidden sm:inline">Delete</span></Button>
       </div>
 
-      <Tabs value={view} onValueChange={v => setView(v as 'edit' | 'preview')} className="shrink-0 border-b bg-card px-4 py-2 lg:hidden print:hidden">
+      <Tabs value={view} onValueChange={v => setView(v as 'edit' | 'preview')} className="shrink-0 border-b bg-card px-4 py-1.5 lg:hidden print:hidden">
         <TabsList className="w-full">
           <TabsTrigger value="edit">Edit</TabsTrigger>
           <TabsTrigger value="preview">Preview</TabsTrigger>
         </TabsList>
       </Tabs>
 
-      <main className="grid min-h-0 flex-1 lg:grid-cols-[minmax(420px,520px)_1fr] print:block">
+      <main className="grid min-h-0 min-w-0 flex-1 grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(420px,520px)_minmax(0,1fr)] print:block">
         <div className={`min-h-0 overflow-y-auto border-r bg-background print:hidden ${view === 'edit' ? '' : 'hidden lg:block'}`}>
           <Editor db={db} resume={resume} update={update} checks={checks} />
         </div>
-        <div className={`min-h-0 ${view === 'preview' ? '' : 'hidden lg:block'} print:!block`}>
+        <div className={`min-h-0 min-w-0 ${view === 'preview' ? '' : 'hidden lg:block'} print:!block`}>
           <Preview resume={resume} logo={db.logo} onPages={setPages} />
         </div>
       </main>

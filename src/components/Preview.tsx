@@ -13,10 +13,10 @@ interface Props {
 }
 
 const GAP = 18            // px of space shown between pages in the preview
-const MIN = 0.4, MAX = 2  // zoom limits (1 = actual paper size)
+const MIN = 0.25, MAX = 2  // zoom limits (1 = actual paper size)
 
 export function Preview({ resume, logo, onPages }: Props) {
-  const wrapRef = useRef<HTMLElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
   const holderRef = useRef<HTMLDivElement>(null)
   const pageRef = useRef<HTMLElement>(null)
   const [pages, setPages] = useState(1)
@@ -49,7 +49,7 @@ export function Preview({ resume, logo, onPages }: Props) {
     const H = n * p.h + (n - 1) * GAP
     el.style.height = H + 'px'
 
-    const fit = Math.max(MIN, Math.min(1, (wrap.clientWidth - 50) / p.w))
+    const fit = Math.max(MIN, Math.min(1, (wrap.clientWidth - (wrap.clientWidth < 520 ? 32 : 50)) / p.w))
     const sc = zoom === 'fit' ? fit : zoom
     el.style.transform = sc === 1 ? 'none' : `scale(${sc})`
     holder.style.width = p.w * sc + 'px'
@@ -81,8 +81,9 @@ export function Preview({ resume, logo, onPages }: Props) {
   const step = (d: number) => setZoom(Math.min(MAX, Math.max(MIN, Math.round((scale + d) * 10) / 10)))
 
   return (
-    <section ref={wrapRef} aria-label="Resume preview" className="h-full min-h-0 overflow-auto bg-muted px-6 pb-12">
-      <div className="sticky top-0 z-10 -mx-6 mb-4 flex flex-wrap items-center justify-between gap-2 border-b bg-muted/90 px-6 py-2 backdrop-blur">
+    <section aria-label="Resume preview" className="flex h-full min-h-0 flex-col bg-muted">
+      {/* the toolbar sits outside the scrolling area, so it never moves out of view */}
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b bg-muted px-4 py-2 sm:px-6">
         <Badge variant={pages > 2 ? 'destructive' : 'secondary'}>
           {pages} {pages === 1 ? 'page' : 'pages'} · {s.paper}
         </Badge>
@@ -93,9 +94,11 @@ export function Preview({ resume, logo, onPages }: Props) {
           <Button variant={zoom === 'fit' ? 'secondary' : 'outline'} size="sm" className="ml-1" onClick={() => setZoom('fit')}><Maximize2 /> Fit</Button>
         </div>
       </div>
-      <div id="page-holder" ref={holderRef} className="mx-auto">
-        <article id="resume" ref={pageRef} className={`page t-${s.template}`} style={style}
-          dangerouslySetInnerHTML={{ __html: html }} />
+      <div ref={wrapRef} className="min-h-0 flex-1 overflow-auto px-4 pt-4 pb-12 sm:px-6">
+        <div id="page-holder" ref={holderRef} className="mx-auto">
+          <article id="resume" ref={pageRef} className={`page t-${s.template}`} style={style}
+            dangerouslySetInnerHTML={{ __html: html }} />
+        </div>
       </div>
     </section>
   )

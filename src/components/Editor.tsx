@@ -188,12 +188,12 @@ export function Editor({ db, resume: r, update, checks }: Props) {
     const img = new Image()
     const url = URL.createObjectURL(file)
     img.onload = () => {
-      // shrink so the saved logo stays small (max 300px on the long side)
-      const k = Math.min(1, 300 / Math.max(img.width, img.height))
+      // keep it sharp in the PDF but small enough to store (max 1000px on the long side)
+      const k = Math.min(1, 1000 / Math.max(img.width, img.height))
       const c = document.createElement('canvas')
       c.width = Math.round(img.width * k); c.height = Math.round(img.height * k)
       c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height)
-      const data = c.toDataURL('image/png')
+      const data = file.type === 'image/jpeg' ? c.toDataURL('image/jpeg', 0.92) : c.toDataURL('image/png')
       URL.revokeObjectURL(url)
       update((res, d) => { d.logo = data; res.settings.showLogo = true })
     }

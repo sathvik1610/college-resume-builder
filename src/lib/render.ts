@@ -69,7 +69,7 @@ export function resumeHTML(r: Resume, userLogo?: string): string {
     education: () => r.education.filter(has).map(e =>
       `<div class="entry">${row(`<b>${esc(e.school)}</b>${e.location ? `, ${esc(e.location)}` : ''}`, `<b>${esc(range(e.start, e.end))}</b>`)}` +
       (e.degree || e.score ? row(`<i>${esc(e.degree)}</i>`, `<i>${esc(e.score)}</i>`, 'sub') : '') +
-      (e.details.trim() ? `<p class="detail"><b>Coursework:</b> ${richHtml(e.details.trim())}</p>` : '') + '</div>').join(''),
+      '</div>').join(''),
     skills: () => {
       const l = r.skills.filter(s => s.items.trim())
       return l.length
