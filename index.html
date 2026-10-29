@@ -1,131 +1,14 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Resume Builder</title>
-<meta name="description" content="Free, offline-capable resume builder for students. Single-column, ATS-friendly layouts. Your data stays in your browser.">
-<meta name="theme-color" content="#1f3a5f">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="css/app.css">
-<link rel="stylesheet" href="css/resume.css">
-<style id="pagestyle"></style>
-</head>
-<body data-view="edit">
-
-<header class="bar">
-  <div class="brand">
-    <img id="brand-logo" alt="" hidden>
-    <div class="brand-text">
-      <strong>Resume Builder</strong>
-      <span id="college-name"></span>
-    </div>
-  </div>
-  <div class="bar-right">
-    <span id="save-status" class="muted" role="status" aria-live="polite"></span>
-    <button data-act="print" class="primary">Download PDF</button>
-  </div>
-</header>
-
-<div class="toolbar">
-  <div class="bar-tools">
-    <label class="sel">
-      <span class="sr">Choose resume</span>
-      <select id="resume-select"></select>
-    </label>
-    <button data-act="new">New</button>
-    <button data-act="dup">Duplicate</button>
-    <button data-act="rename">Rename</button>
-    <button data-act="del" class="danger">Delete</button>
-  </div>
-</div>
-
-<nav class="tabs" aria-label="View">
-  <button data-act="tab" data-tab="edit" class="on">Edit</button>
-  <button data-act="tab" data-tab="preview">Preview</button>
-</nav>
-
-<main class="layout">
-  <aside id="editor" class="editor" aria-label="Resume editor">
-
-    <details class="card" id="card-check" open>
-      <summary><span>Resume check</span><span id="check-badge" class="badge"></span></summary>
-      <ul id="checks" class="checks"></ul>
-    </details>
-
-    <details class="card" id="card-settings">
-      <summary><span>Layout &amp; format</span></summary>
-      <div class="grid">
-        <label class="f"><span>Template</span>
-          <select data-path="settings.template">
-            <option value="classic">Classic (serif)</option>
-            <option value="modern">Modern (sans-serif)</option>
-          </select>
-        </label>
-        <label class="f"><span>Paper</span>
-          <select data-path="settings.paper">
-            <option value="A4">A4</option>
-            <option value="Letter">US Letter</option>
-          </select>
-        </label>
-        <label class="f"><span>Font size <output id="out-fs"></output></span>
-          <input type="range" min="9" max="12" step="0.5" data-path="settings.fontSize">
-        </label>
-        <label class="f"><span>Margins <output id="out-m"></output></span>
-          <input type="range" min="0.4" max="1" step="0.05" data-path="settings.margin">
-        </label>
-      </div>
-      <div class="grid">
-        <label class="f"><span>Links</span>
-          <select data-path="settings.linkStyle">
-            <option value="label">Short labels (GitHub, LinkedIn)</option>
-            <option value="url">Full addresses</option>
-          </select>
-        </label>
-        <label class="f check"><span>College logo</span>
-          <span class="inl"><input type="checkbox" data-path="settings.showLogo"> Show on resume <em id="logo-state" class="muted"></em></span>
-        </label>
-        <div class="f full btn-row">
-          <button type="button" onclick="document.getElementById('logo-in').click()">Upload a different logo</button>
-          <button type="button" data-act="logo-remove">Reset to default logo</button>
-          <input type="file" id="logo-in" accept="image/png,image/jpeg,image/svg+xml" hidden>
-        </div>
-      </div>
-      <p class="hint">Both templates are single column with plain text headings. No tables, icons, photos or graphics, so ATS software reads them correctly.</p>
-    </details>
-
-    <div id="form"></div>
-
-    <details class="card" id="card-data">
-      <summary><span>Your data</span></summary>
-      <p class="hint">Everything is saved in this browser on this device. Clear your browser data and it is gone, so export a backup now and then.</p>
-      <div class="btn-row">
-        <button data-act="export-json">Export backup (.json)</button>
-        <button data-act="import">Import backup</button>
-        <button data-act="export-txt">Export plain text</button>
-        <button data-act="sample">Load sample content</button>
-      </div>
-      <input type="file" id="file-in" accept="application/json,.json" hidden>
-    </details>
-
-    <p class="foot muted">Tip: in the print dialog choose <em>Save as PDF</em> and switch off <em>Headers and footers</em>.</p>
-  </aside>
-
-  <section class="preview-wrap" id="preview-wrap" aria-label="Resume preview">
-    <div class="preview-bar">
-      <span id="page-info"></span>
-      <span class="muted">Red line marks where a page ends (approximate)</span>
-    </div>
-    <div id="page-holder">
-      <article id="resume" class="page"></article>
-    </div>
-  </section>
-</main>
-
-<datalist id="dl-degrees"></datalist>
-
-<script src="js/config.js"></script>
-<script src="js/app.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#8b1a1a" />
+    <title>Resume Builder</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

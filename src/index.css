@@ -1,0 +1,78 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "./styles/resume.css";
+
+@font-face { font-family: "Source Sans 3"; src: url("./fonts/source-sans-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Source Sans 3"; src: url("./fonts/source-sans-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Source Sans 3"; src: url("./fonts/source-sans-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: var(--font-sans);
+    --font-sans: "Source Sans 3", "Segoe UI", Arial, sans-serif;
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+    --background: oklch(0.972 0.002 90);
+    --foreground: oklch(0.2 0.01 30);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.2 0.01 30);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.2 0.01 30);
+    --primary: oklch(0.4 0.14 25);          /* maroon, from the IIT Tirupati logo */
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.955 0.004 60);
+    --secondary-foreground: oklch(0.25 0.02 30);
+    --muted: oklch(0.955 0.003 80);
+    --muted-foreground: oklch(0.5 0.01 40);
+    --accent: oklch(0.95 0.015 25);
+    --accent-foreground: oklch(0.3 0.1 25);
+    --destructive: oklch(0.55 0.2 27);
+    --border: oklch(0.905 0.004 80);
+    --input: oklch(0.86 0.005 80);
+    --ring: oklch(0.55 0.12 25);
+    --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html, body, #root { height: 100%; }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+/* printing: only the resume page */
+@media print {
+  html, body, #root { height: auto; background: #fff; }
+  #page-holder { width: auto !important; height: auto !important; box-shadow: none !important; margin: 0 !important; }
+}
