@@ -16,8 +16,11 @@
 
 <header class="bar">
   <div class="brand">
-    <strong>Resume Builder</strong>
-    <span id="college-name" class="muted"></span>
+    <img id="brand-logo" alt="" hidden>
+    <div class="brand-text">
+      <strong>Resume Builder</strong>
+      <span id="college-name"></span>
+    </div>
   </div>
   <div class="bar-tools">
     <label class="sel">
@@ -81,8 +84,8 @@
           <span class="inl"><input type="checkbox" data-path="settings.showLogo"> Show on resume <em id="logo-state" class="muted"></em></span>
         </label>
         <div class="f full btn-row">
-          <button type="button" onclick="document.getElementById('logo-in').click()">Upload logo</button>
-          <button type="button" data-act="logo-remove">Remove logo</button>
+          <button type="button" onclick="document.getElementById('logo-in').click()">Upload a different logo</button>
+          <button type="button" data-act="logo-remove">Reset to default logo</button>
           <input type="file" id="logo-in" accept="image/png,image/jpeg,image/svg+xml" hidden>
         </div>
       </div>

@@ -1,8 +1,9 @@
 // College settings. Edit this file to brand the tool for your institution.
 window.COLLEGE = {
-  name: "Your College Name",          // shown in the header and pre-filled in the first Education entry
-  logo: "",                           // path to the official logo, e.g. "assets/logo.png" (students can also upload one)
-  location: "City, State",            // pre-filled as the Education location
+  accent: "#8b1a1a",                  // main colour of the app (taken from the logo)
+  name: "Indian Institute of Technology Tirupati",          // shown in the header and pre-filled in the first Education entry
+  logo: "assets/logo.jpg",                        // path to the official logo, e.g. "assets/logo.png" (students can also upload one)
+  location: "Tirupati, Andhra Pradesh",            // pre-filled as the Education location
   degrees: [                          // suggestions in the Degree field
     "B.Tech in Computer Science and Engineering",
     "B.Tech in Information Technology",

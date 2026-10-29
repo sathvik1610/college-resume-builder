@@ -11,10 +11,7 @@
     { k: 'name', l: 'Full name', w: 'full', ph: 'As on your certificates' },
     { k: 'email', l: 'Email', ph: 'firstname.lastname@gmail.com' },
     { k: 'phone', l: 'Phone', ph: '+91 00000 00000' },
-    { k: 'location', l: 'City, State', ph: 'City, State' },
-    { k: 'linkedin', l: 'LinkedIn', ph: 'linkedin.com/in/your-id' },
-    { k: 'github', l: 'GitHub', ph: 'github.com/your-id' },
-    { k: 'portfolio', l: 'Portfolio / website', ph: 'optional' }
+    { k: 'location', l: 'City, State', ph: 'City, State' }
   ];
 
   const SECTIONS = {
@@ -36,7 +33,8 @@
     projects: { title: 'Projects', kind: 'list', hint: 'One bullet per line. Say what you built, with what, and the result.', fields: [
       { k: 'name', l: 'Project name' },
       { k: 'tech', l: 'Tech used', ph: 'React, Node.js, MongoDB' },
-      { k: 'link', l: 'Link (optional)', ph: 'github.com/you/project' },
+      { k: 'link', l: 'Link (optional)', ph: 'github.com/your-id/project' },
+      { k: 'linkText', l: 'Link text (optional)', ph: 'GitHub, Live demo, Paper' },
       { k: 'date', l: 'Date (optional)', ph: 'Mar 2025' },
       { k: 'bullets', l: 'Bullets (one per line)', w: 'full', t: 'area', rows: 4 }
     ] },
@@ -67,15 +65,17 @@
 
   const DEFAULT_ORDER = ['summary', 'education', 'skills', 'projects', 'experience', 'certifications', 'achievements', 'leadership'];
 
-  const blankItem = key => Object.fromEntries(SECTIONS[key].fields.map(f => [f.k, '']));
+  const blankItem = key => key === 'links' ? { label: '', url: '' } : Object.fromEntries(SECTIONS[key].fields.map(f => [f.k, '']));
+  const title = (r, k) => ((r.settings.titles || {})[k] || '').trim() || SECTIONS[k].title;
 
   function blankResume(name) {
     const r = {
       id: 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
       name: name || 'My resume',
       updated: Date.now(),
-      settings: { template: 'classic', paper: 'A4', fontSize: 11, margin: 0.5, linkStyle: 'label', showLogo: true, order: DEFAULT_ORDER.slice() },
+      settings: { template: 'classic', paper: 'A4', fontSize: 11, margin: 0.5, linkStyle: 'label', showLogo: true, titles: {}, order: DEFAULT_ORDER.slice() },
       basics: Object.fromEntries(BASICS.map(f => [f.k, ''])),
+      links: [{ label: 'LinkedIn', url: '' }, { label: 'GitHub', url: '' }],
       summary: '', achievements: ''
     };
     for (const [k, s] of Object.entries(SECTIONS)) if (s.kind === 'list') r[k] = [blankItem(k)];
@@ -93,6 +93,14 @@
       if (s.kind === 'list') out[k] = Array.isArray(r[k]) ? r[k].map(i => ({ ...blankItem(k), ...i })) : [blankItem(k)];
       else out[k] = typeof r[k] === 'string' ? r[k] : '';
     }
+    if (Array.isArray(r.links)) out.links = r.links.map(l => ({ label: '', url: '', ...l }));
+    else {
+      const old = r.basics || {};
+      out.links = [['LinkedIn', old.linkedin], ['GitHub', old.github], ['Portfolio', old.portfolio]]
+        .filter(x => x[1]).map(x => ({ label: x[0], url: x[1] }));
+      if (!out.links.length) out.links = base.links;
+    }
+    out.settings.titles = { ...(out.settings.titles || {}) };
     const order = (out.settings.order || []).filter(k => SECTIONS[k]);
     DEFAULT_ORDER.forEach(k => { if (!order.includes(k)) order.push(k); });
     out.settings.order = order;
@@ -101,8 +109,8 @@
 
   function sample() {
     const r = blankResume('Sample resume');
-    r.basics = { name: 'Your Name', email: 'your.name@example.com', phone: '+91 00000 00000', location: 'City, State',
-      linkedin: 'linkedin.com/in/your-id', github: 'github.com/your-id', portfolio: '' };
+    r.basics = { name: 'Your Name', email: 'your.name@example.com', phone: '+91 00000 00000', location: 'City, State' };
+    r.links = [{ label: 'LinkedIn', url: 'linkedin.com/in/your-id' }, { label: 'GitHub', url: 'github.com/your-id' }];
     r.education = [
       { school: COLLEGE.name || 'Your College Name', location: COLLEGE.location || 'City, State', degree: 'B.Tech in Computer Science and Engineering',
         score: 'CGPA: 8.6/10', start: 'Aug 2022', end: 'May 2026', details: 'Data Structures, Operating Systems, DBMS, Computer Networks, Machine Learning' },
@@ -155,7 +163,7 @@
         return;
       }
     } catch (e) { /* first run or corrupt data: start fresh */ }
-    const r = sample(); r.name = 'My resume';   // first visit: show placeholder content so the layout is visible
+    const r = normalise({ ...sample(), name: 'My resume' });   // first visit: show placeholder content so the layout is visible
     db = { current: r.id, resumes: { [r.id]: r } };
   }
   const cur = () => db.resumes[db.current];
@@ -216,7 +224,7 @@
       return l.length ? `<div class="skills">${l.map(s => `<p class="skill">${s.label.trim() ? `<b>${esc(s.label.trim())}:</b> ` : ''}${esc(s.items.trim())}</p>`).join('')}</div>` : '';
     },
     projects: r => r.projects.filter(has).map(p =>
-      `<div class="entry">${row(`<b>${esc(p.name)}</b>${p.tech ? ` | <i>${esc(p.tech)}</i>` : ''}${p.link.trim() ? ' | ' + link(p.link, guessLabel(p.link)) : ''}`, esc(p.date)).replace('class="row"', 'class="row head"')}${bullets(p.bullets)}</div>`).join(''),
+      `<div class="entry">${row(`<b>${esc(p.name)}</b>${p.tech ? ` | <i>${esc(p.tech)}</i>` : ''}${p.link.trim() ? ' | ' + link(p.link, p.linkText.trim() || guessLabel(p.link)) : ''}`, esc(p.date)).replace('class="row"', 'class="row head"')}${bullets(p.bullets)}</div>`).join(''),
     experience: r => roles(r.experience),
     leadership: r => roles(r.leadership),
     certifications: r => {
@@ -241,13 +249,13 @@
     const b = r.basics;
     linkStyle = r.settings.linkStyle;
     const contact = [esc(b.location), esc(b.phone), b.email && `<a href="mailto:${esc(b.email)}">${esc(b.email)}</a>`,
-      link(b.linkedin, 'LinkedIn'), link(b.github, 'GitHub'), link(b.portfolio, 'Portfolio')].filter(Boolean).join('<span class="sep">|</span>');
+      ...r.links.filter(l => l.url.trim()).map(l => link(l.url, l.label.trim()))].filter(Boolean).join('<span class="sep">|</span>');
     const logo = r.settings.showLogo && logoSrc();
     let h = `<header${logo ? ' class="has-logo"' : ''}>${logo ? `<img class="logo" src="${esc(logo)}" alt="College logo" onerror="this.remove()">` : ''}` +
       `<h1>${esc(b.name.trim()) || 'Your Name'}</h1>${contact ? `<p class="contact">${contact}</p>` : ''}</header>`;
     for (const key of r.settings.order) {
       const body = RENDER[key](r);
-      if (body) h += `<section><h2>${esc(SECTIONS[key].title)}</h2>${body}</section>`;
+      if (body) h += `<section><h2>${esc(title(r, key))}</h2>${body}</section>`;
     }
     return h;
   }
@@ -272,7 +280,7 @@
     const r = cur(), el = $('#resume'), holder = $('#page-holder'), wrap = $('#preview-wrap');
     const p = PAPER[r.settings.paper] || PAPER.A4;
     const m = r.settings.margin * 96;
-    const avail = wrap.clientWidth - 32;
+    const avail = wrap.clientWidth - 50;
     const scale = avail > 0 ? Math.min(1, avail / p.w) : 1;
     const h = Math.max(p.h, el.scrollHeight);
     el.style.transform = scale < 1 ? `scale(${scale})` : 'none';
@@ -320,7 +328,7 @@
 
   /* ---------- editor form ---------- */
 
-  const openState = { basics: true, education: true };
+  const openState = { basics: true, links: true, education: true };
 
   function field(path, f, val) {
     const common = `data-path="${path}" placeholder="${esc(f.ph || '')}"${f.list ? ` list="${f.list}"` : ''}`;
@@ -330,40 +338,58 @@
     return `<label class="f ${f.w || ''}"><span>${esc(f.l)}</span>${input}</label>`;
   }
 
+  function entryHTML(key, i, list, fields, label) {
+    return `<div class="entry"><div class="entry-h"><span>${esc(label || 'Entry ' + (i + 1))}</span><span class="tools">` +
+      `<button data-act="move" data-key="${key}" data-i="${i}" data-dir="-1"${i === 0 ? ' disabled' : ''}>Up</button>` +
+      `<button data-act="move" data-key="${key}" data-i="${i}" data-dir="1"${i === list.length - 1 ? ' disabled' : ''}>Down</button>` +
+      `<button data-act="remove" data-key="${key}" data-i="${i}" class="danger">Remove</button></span></div><div class="grid">` +
+      fields.map(f => field(`${key}.${i}.${f.k}`, f, list[i][f.k])).join('') + '</div></div>';
+  }
+
+  const LINK_FIELDS = [
+    { k: 'label', l: 'Label shown', ph: 'LinkedIn' },
+    { k: 'url', l: 'Web address', ph: 'linkedin.com/in/your-id' }
+  ];
+
   function renderForm() {
     const r = cur();
     let h = `<details class="card" data-key="basics"${openState.basics ? ' open' : ''}><summary><span>Contact details</span></summary><div class="grid">` +
       BASICS.map(f => field('basics.' + f.k, f, r.basics[f.k])).join('') + '</div></details>';
 
+    h += `<details class="card" data-key="links"${openState.links ? ' open' : ''}><summary><span>Links</span></summary>` +
+      `<p class="hint">Add any links you want in the header: LinkedIn, GitHub, portfolio, Google Scholar, LeetCode, a published paper. Blank rows are ignored.</p>` +
+      r.links.map((l, i) => entryHTML('links', i, r.links, LINK_FIELDS, l.label || l.url)).join('') +
+      `<button class="add" data-act="add" data-key="links">Add link</button></details>`;
+
     r.settings.order.forEach((key, idx) => {
-      const s = SECTIONS[key];
-      h += `<details class="card" data-key="${key}"${openState[key] ? ' open' : ''}><summary><span>${esc(s.title)}</span>` +
-        `<span class="sec-tools"><button data-act="sec-move" data-key="${key}" data-dir="-1" aria-label="Move ${esc(s.title)} up"${idx === 0 ? ' disabled' : ''}>&#9650;</button>` +
-        `<button data-act="sec-move" data-key="${key}" data-dir="1" aria-label="Move ${esc(s.title)} down"${idx === r.settings.order.length - 1 ? ' disabled' : ''}>&#9660;</button></span></summary>`;
+      const s = SECTIONS[key], t = title(r, key);
+      h += `<details class="card" data-key="${key}"${openState[key] ? ' open' : ''}><summary><span data-title="${key}">${esc(t)}</span>` +
+        `<span class="sec-tools"><button data-act="sec-move" data-key="${key}" data-dir="-1" aria-label="Move ${esc(t)} up"${idx === 0 ? ' disabled' : ''}>&#9650;</button>` +
+        `<button data-act="sec-move" data-key="${key}" data-dir="1" aria-label="Move ${esc(t)} down"${idx === r.settings.order.length - 1 ? ' disabled' : ''}>&#9660;</button></span></summary>` +
+        `<div class="grid ttl"><label class="f full"><span>Heading shown on resume</span>` +
+        `<input type="text" data-path="settings.titles.${key}" placeholder="${esc(s.title)}" value="${esc((r.settings.titles || {})[key] || '')}" autocomplete="off"></label></div>`;
       if (s.hint) h += `<p class="hint">${esc(s.hint)}</p>`;
       if (s.kind === 'text') {
-        h += `<div class="body"><label class="f"><span class="sr">${esc(s.title)}</span><textarea data-path="${key}" rows="${s.rows}">${esc(r[key])}</textarea></label></div>`;
+        h += `<div class="body"><label class="f"><span class="sr">${esc(t)}</span><textarea data-path="${key}" rows="${s.rows}">${esc(r[key])}</textarea></label></div>`;
       } else {
         r[key].forEach((item, i) => {
           const label = item[s.fields[0].k] || item[s.fields[1] && s.fields[1].k] || '';
-          h += `<div class="entry"><div class="entry-h"><span>${esc(label || 'Entry ' + (i + 1))}</span><span class="tools">` +
-            `<button data-act="move" data-key="${key}" data-i="${i}" data-dir="-1"${i === 0 ? ' disabled' : ''}>Up</button>` +
-            `<button data-act="move" data-key="${key}" data-i="${i}" data-dir="1"${i === r[key].length - 1 ? ' disabled' : ''}>Down</button>` +
-            `<button data-act="remove" data-key="${key}" data-i="${i}" class="danger">Remove</button></span></div><div class="grid">` +
-            s.fields.map(f => field(`${key}.${i}.${f.k}`, f, item[f.k])).join('') + '</div></div>';
+          h += entryHTML(key, i, r[key], s.fields, label);
         });
-        h += `<button class="add" data-act="add" data-key="${key}">Add ${esc(s.title.toLowerCase().replace(/s$/, ''))} entry</button>`;
+        h += `<button class="add" data-act="add" data-key="${key}">Add entry</button>`;
       }
       h += '</details>';
     });
     $('#form').innerHTML = h;
-    $('#college-name').textContent = COLLEGE.name && COLLEGE.name !== 'Your College Name' ? COLLEGE.name : '';
   }
 
   function renderSettings() {
     const s = cur().settings;
-    document.querySelectorAll('[data-path^="settings."]').forEach(el => { const v = s[el.dataset.path.slice(9)]; if (el.type === 'checkbox') el.checked = !!v; else el.value = v; });
+    document.querySelectorAll('[data-path^="settings."]:not([data-path^="settings.titles"])').forEach(el => { const v = s[el.dataset.path.slice(9)]; if (el.type === 'checkbox') el.checked = !!v; else el.value = v; });
     $('#logo-state').textContent = logoSrc() ? '(logo added)' : '(no logo yet)';
+    const bl = $('#brand-logo'), src = logoSrc();
+    bl.hidden = !src;
+    if (src && bl.getAttribute('src') !== src) bl.src = src;
     $('#out-fs').textContent = s.fontSize + ' pt';
     $('#out-m').textContent = s.margin + ' in';
   }
@@ -395,7 +421,10 @@
     if (e.target.type === 'range') v = parseFloat(v);
     if (e.target.type === 'checkbox') v = e.target.checked;
     setPath(cur(), p, v);
-    if (p.startsWith('settings.')) renderSettings();
+    if (p.startsWith('settings.titles.')) {
+      const k = p.slice(16), el = document.querySelector(`[data-title="${k}"]`);
+      if (el) el.textContent = title(cur(), k);
+    } else if (p.startsWith('settings.')) renderSettings();
     touch();
   });
 
@@ -423,9 +452,8 @@
 
   function toText(r) {
     const b = r.basics, L = [];
-    L.push(b.name, [b.location, b.phone, b.email, b.linkedin, b.github, b.portfolio].filter(Boolean).join(' | '), '');
+    L.push(b.name, [b.location, b.phone, b.email, ...r.links.filter(l => l.url.trim()).map(l => `${l.label ? l.label + ': ' : ''}${l.url}`)].filter(Boolean).join(' | '), '');
     for (const key of r.settings.order) {
-      const s = SECTIONS[key];
       const block = [];
       if (key === 'summary' && r.summary.trim()) block.push(r.summary.trim());
       if (key === 'achievements') lines(r.achievements).forEach(x => block.push('- ' + x));
@@ -434,7 +462,7 @@
       if (key === 'certifications') r.certifications.filter(c => c.name.trim()).forEach(c => block.push('- ' + [c.name, c.issuer, c.date].filter(Boolean).join(', ')));
       if (key === 'projects') r.projects.filter(has).forEach(p => { block.push([p.name, p.tech, p.link, p.date].filter(Boolean).join(' | ')); lines(p.bullets).forEach(x => block.push('- ' + x)); });
       if (key === 'experience' || key === 'leadership') r[key].filter(has).forEach(e => { block.push(`${e.role} | ${range(e.start, e.end)}`, [e.org, e.location].filter(Boolean).join(', ')); lines(e.bullets).forEach(x => block.push('- ' + x)); });
-      if (block.length) L.push(s.title.toUpperCase(), ...block, '');
+      if (block.length) L.push(title(r, key).toUpperCase(), ...block, '');
     }
     return L.join('\n');
   }
@@ -446,6 +474,7 @@
       const r = blankResume(name.trim());
       // carry over contact details so students do not retype them
       Object.assign(r.basics, cur().basics);
+      r.links = JSON.parse(JSON.stringify(cur().links));
       db.resumes[r.id] = r; db.current = r.id;
       scheduleSave(); renderAll();
     },
@@ -474,7 +503,7 @@
       document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b === el));
       if (el.dataset.tab === 'preview') requestAnimationFrame(fit);
     },
-    'logo-remove'() { delete db.logo; COLLEGE.logo = ''; scheduleSave(); renderSettings(); renderPreview(); },
+    'logo-remove'() { delete db.logo; scheduleSave(); renderSettings(); renderPreview(); },
     'export-json'() { download(slug(cur().name) + '.json', JSON.stringify({ app: 'college-resume-builder', version: 1, resume: cur() }, null, 2), 'application/json'); },
     'export-txt'() { download(slug(cur().basics.name || cur().name) + '.txt', toText(cur()), 'text/plain'); },
     import() { $('#file-in').click(); },
@@ -572,6 +601,8 @@
   /* ---------- start ---------- */
 
   load();
+  if (COLLEGE.accent) document.documentElement.style.setProperty('--accent', COLLEGE.accent);
+  $('#college-name').textContent = COLLEGE.name && COLLEGE.name !== 'Your College Name' ? COLLEGE.name : '';
   $('#dl-degrees').innerHTML = (COLLEGE.degrees || []).map(d => `<option value="${esc(d)}">`).join('');
   renderAll();
   setSaveStatus(storageOk ? 'Saved in this browser' : 'Browser storage is blocked. Export a backup.');

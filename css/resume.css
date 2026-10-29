@@ -93,8 +93,8 @@
   line-height: 1.28;
 }
 .page.t-modern header { text-align: left; }
-.page.t-modern h1 { font-size: 2em; font-weight: 700; font-variant: normal; color: #1f3a5f; letter-spacing: -.01em; }
-.page.t-modern h2 { font-variant: normal; text-transform: uppercase; letter-spacing: .06em; font-size: .95em; color: #1f3a5f; border-bottom: 1pt solid #1f3a5f; }
+.page.t-modern h1 { font-size: 2em; font-weight: 700; font-variant: normal; color: var(--accent, #1f3a5f); letter-spacing: -.01em; }
+.page.t-modern h2 { font-variant: normal; text-transform: uppercase; letter-spacing: .06em; font-size: .95em; color: var(--accent, #1f3a5f); border-bottom: 1pt solid var(--accent, #1f3a5f); }
 .page.t-modern .logo { left: auto; right: 0; }
 
 @media print {
