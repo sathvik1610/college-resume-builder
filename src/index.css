@@ -7,15 +7,15 @@
 @font-face { font-family: "Source Sans 3"; src: url("./fonts/source-sans-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
 @font-face { font-family: "Source Sans 3"; src: url("./fonts/source-sans-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
 
-@font-face { font-family: "Source Serif 4"; src: url("./fonts/source-serif-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
-@font-face { font-family: "Source Serif 4"; src: url("./fonts/source-serif-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Playfair Display"; src: url("./fonts/playfair-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Playfair Display"; src: url("./fonts/playfair-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
     --font-heading: var(--font-sans);
     --font-sans: "Source Sans 3", "Segoe UI", Arial, sans-serif;
-    --font-display: "Source Serif 4", Georgia, serif;
+    --font-display: "Playfair Display", Georgia, serif;
     --color-header: var(--header);
     --color-ring: var(--ring);
     --color-input: var(--input);
