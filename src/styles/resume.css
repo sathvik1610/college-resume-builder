@@ -40,8 +40,9 @@
 .page .contact { margin: 5pt 0 0; font-size: .9em; }
 .page .contact a, .page a { color: #0b57d0; text-decoration: none; }  /* links are blue */
 .page .sep { padding: 0 .5em; }
-.page .logo { position: absolute; left: 0; top: 0; height: 3.6em; width: auto; max-width: 5em; object-fit: contain; }
-.page header.has-logo { min-height: 3.6em; }
+.page .logo { position: absolute; left: 0; top: 0; height: 4.2em; width: auto; max-width: 6em; object-fit: contain; }
+.page header.has-logo { min-height: 4.2em; }
+.page header + section > h2 { margin-top: 3pt; }   /* first section sits close to the contact line */
 
 /* section headings: small caps, bold, thin rule (as in the common LaTeX resume class) */
 .page h2 {

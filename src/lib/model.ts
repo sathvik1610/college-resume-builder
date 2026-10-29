@@ -64,7 +64,7 @@ export interface Db {
 export const BASICS: Field[] = [
   { k: 'name', l: 'Full name', w: 'full', ph: 'As on your certificates' },
   { k: 'email', l: 'Email', ph: 'firstname.lastname@gmail.com' },
-  { k: 'phone', l: 'Phone', ph: '+91 00000 00000' },
+  { k: 'phone', l: 'Phone', ph: '+91 987654321' },
   { k: 'location', l: 'City, State', ph: 'City, State' },
 ]
 
@@ -194,8 +194,8 @@ export function normalise(r: any): Resume {
 
 export function sample(): Resume {
   const r = blankResume('Sample resume')
-  r.basics = { name: 'Your Name', email: 'your.name@example.com', phone: '+91 00000 00000', location: '' }
-  r.links = [{ label: 'LinkedIn', url: 'linkedin.com/in/your-id' }, { label: 'GitHub', url: 'github.com/your-id' }]
+  r.basics = { name: 'John Smith', email: 'john.smith@example.com', phone: '+91 987654321', location: '' }
+  r.links = [{ label: 'LinkedIn', url: 'linkedin.com/in/johnsmith' }, { label: 'GitHub', url: 'github.com/johnsmith' }]
   r.education = [
     { school: COLLEGE.name, location: COLLEGE.location, degree: 'B.Tech in Computer Science and Engineering',
       score: 'CGPA: 8.6/10', start: 'Aug 2022', end: 'May 2026' },
@@ -210,11 +210,11 @@ export function sample(): Resume {
     { label: 'Tools and platforms', items: 'Git, GitHub Actions, Docker, Linux, Postman, AWS (EC2, S3)' },
   ]
   r.projects = [
-    { name: 'Campus Event Portal', tech: 'React, Node.js, MongoDB', link: 'github.com/your-id/project-one', linkText: '', date: 'Jan - Mar 2025',
+    { name: 'Campus Event Portal', tech: 'React, Node.js, MongoDB', link: 'github.com/johnsmith/campus-event-portal', linkText: '', date: 'Jan - Mar 2025',
       bullets: 'Built a portal where **12 student clubs** publish events and **1,800+ students** register, replacing spreadsheets and chat groups.\nAdded QR check-in, which cut attendance entry at the annual fest from about **40 minutes to under 5**.\nDeployed on Render with role-based access for club admins and a nightly MongoDB backup.' },
-    { name: 'Crop Disease Classifier', tech: 'Python, TensorFlow, Flask', link: 'github.com/your-id/project-two', linkText: '', date: 'Aug - Oct 2024',
+    { name: 'Crop Disease Classifier', tech: 'Python, TensorFlow, Flask', link: 'github.com/johnsmith/crop-disease-classifier', linkText: '', date: 'Aug - Oct 2024',
       bullets: 'Trained a CNN on **54,000 leaf images** across **38 classes** and reached **94% test accuracy** after augmentation.\nWrapped the model in a Flask API that returns a prediction in **under 2 seconds** on a basic cloud instance.\nCompared MobileNetV2 and ResNet50 and picked MobileNetV2, which was **3x faster** with only a 1% drop in accuracy.' },
-    { name: 'Distributed Task Queue', tech: 'Node.js, Redis, Docker', link: 'github.com/your-id/project-three', linkText: '', date: 'Nov 2024 - Jan 2025',
+    { name: 'Distributed Task Queue', tech: 'Node.js, Redis, Docker', link: 'github.com/johnsmith/task-queue', linkText: '', date: 'Nov 2024 - Jan 2025',
       bullets: 'Designed a job queue with **3 worker processes**, retries with backoff, and a dead-letter list for failed jobs.\nSustained **about 500 jobs/sec** in local load tests and added Prometheus metrics for queue depth and latency.\nPackaged everything with Docker Compose so the full stack starts with **one command**.' },
   ]
   r.experience = [
