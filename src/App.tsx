@@ -30,11 +30,7 @@ export default function App() {
   const [nameDraft, setNameDraft] = useState('')
   const [busy, setBusy] = useState(false)
   const [dark, setDark] = useState(() => {
-    try {
-      const v = localStorage.getItem('crb:theme')
-      if (v) return v === 'dark'
-    } catch { /* storage blocked: follow the system setting */ }
-    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false
+    try { return localStorage.getItem('crb:theme') === 'dark' } catch { return false }   // light is the default
   })
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
@@ -104,18 +100,21 @@ export default function App() {
 
   return (
     <div className="flex h-full flex-col print:block print:h-auto">
-      <header className="grid shrink-0 grid-cols-1 items-center gap-x-4 gap-y-2 bg-linear-to-r from-header-from to-header-to px-4 py-2 text-primary-foreground sm:grid-cols-[1fr_auto_1fr] sm:px-5 sm:py-3 print:hidden">
-        <div className="order-2 hidden min-w-0 sm:order-1 sm:block">
-          <span role="status" aria-live="polite" className="text-[13px] opacity-80">{saveText}</span>
-        </div>
-        <div className="order-1 flex items-center justify-center gap-3.5 sm:order-2">
-          {logo && <img src={logo} alt="" className="h-10 w-auto max-w-[3.75rem] rounded-md bg-white object-contain p-1 sm:h-12 sm:max-w-[4.5rem]" />}
+      <header className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 bg-linear-to-r from-header-from to-header-to px-4 py-2.5 text-primary-foreground sm:px-6 print:hidden">
+        <div className="flex items-center gap-3.5">
+          {logo && (
+            <img src={logo} alt=""
+              className={db.logo
+                ? 'h-11 w-auto max-w-[4.5rem] rounded-md bg-white object-contain p-1 sm:h-12'
+                : 'h-11 w-auto max-w-[5rem] object-contain brightness-0 invert sm:h-[3.25rem]'} />
+          )}
           <div className="text-left leading-tight">
             <h1 className="font-display text-xl font-bold tracking-tight sm:text-[1.55rem]">Resume Builder</h1>
             <p className="mt-0.5 text-xs tracking-wide opacity-85 sm:text-[13px]">{COLLEGE.name}</p>
           </div>
         </div>
-        <div className="order-3 flex items-center justify-center gap-2 sm:justify-end">
+        <div className="ml-auto flex items-center gap-2 sm:gap-3">
+          <span role="status" aria-live="polite" className="hidden text-[13px] opacity-80 md:inline">{saveText}</span>
           <Button variant="ghost" size="icon" aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
             title={dark ? 'Light mode' : 'Dark mode'} onClick={() => setDark(d => !d)}
             className="text-primary-foreground hover:bg-white/15 hover:text-primary-foreground">

@@ -69,8 +69,8 @@
     --input: oklch(0.86 0.016 262);
     --ring: oklch(0.62 0.17 262);
     --radius: 0.5rem;
-    --header-from: #051b50;                    /* title bar gradient, left */
-    --header-to: #002a8c;                      /* title bar gradient, right */
+    --header-from: #0b2468;                    /* title bar gradient, left */
+    --header-to: #0a3cae;                      /* title bar gradient, right */
 }
 
 .dark {

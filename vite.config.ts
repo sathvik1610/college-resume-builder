@@ -11,7 +11,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icon.svg', 'assets/logo.jpg'],
+      includeAssets: ['icon.svg', 'assets/logo.png'],
       manifest: {
         name: 'Resume Builder',
         short_name: 'Resume',
@@ -23,7 +23,7 @@ export default defineConfig({
         theme_color: '#051b50',
         icons: [{ src: 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' }],
       },
-      workbox: { globPatterns: ['**/*.{js,css,html,svg,jpg,ttf,woff,woff2}'] },
+      workbox: { globPatterns: ['**/*.{js,css,html,svg,jpg,png,ttf,woff,woff2}'] },
     }),
   ],
   resolve: { alias: { '@': path.resolve(__dirname, './src') } },

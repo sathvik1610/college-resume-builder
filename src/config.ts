@@ -2,7 +2,7 @@
 export const COLLEGE = {
   name: 'Indian Institute of Technology Tirupati', // shown in the header and pre-filled in the first Education entry
   location: '',                                    // optional: pre-filled as the Education location (empty by default)
-  logo: `${import.meta.env.BASE_URL}assets/logo.jpg`, // official logo: replace public/assets/logo.jpg
+  logo: `${import.meta.env.BASE_URL}assets/logo.png`, // official logo: replace public/assets/logo.png
   degrees: [                                       // suggestions in the Degree field
     'B.Tech in Computer Science and Engineering',
     'B.Tech in Information Technology',

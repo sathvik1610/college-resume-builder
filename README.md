@@ -37,7 +37,7 @@ The output in `dist/` uses relative paths, so it works from a sub-folder.
 ## Brand it for your college
 
 - `src/config.ts`: college name, location and degree suggestions.
-- `public/assets/logo.jpg`: the official logo. Replace the file to change it.
+- `public/assets/logo.png`: the official logo. Replace the file to change it.
 - `src/index.css`: the colour tokens (`--primary` is the Docker blue, `--header-from` and `--header-to` set the navy title bar).
 
 ## Saving a good PDF
