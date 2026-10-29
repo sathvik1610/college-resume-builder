@@ -1,6 +1,7 @@
 // College settings. Edit this file to brand the tool for your institution.
 window.COLLEGE = {
   name: "Your College Name",          // shown in the header and pre-filled in the first Education entry
+  logo: "",                           // path to the official logo, e.g. "assets/logo.png" (students can also upload one)
   location: "City, State",            // pre-filled as the Education location
   degrees: [                          // suggestions in the Degree field
     "B.Tech in Computer Science and Engineering",

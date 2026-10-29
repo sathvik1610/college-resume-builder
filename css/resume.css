@@ -1,10 +1,15 @@
-/* The resume itself. System fonts only: they work offline and every ATS reads them. */
+/* The resume itself. Fonts are bundled (fonts/), so it looks the same offline and on every device. */
+@font-face { font-family: "CMU Serif"; src: url("../fonts/cmunrm.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "CMU Serif"; src: url("../fonts/cmunbx.woff") format("woff"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "CMU Serif"; src: url("../fonts/cmunti.woff") format("woff"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "CMU Serif"; src: url("../fonts/cmunbi.woff") format("woff"); font-weight: 700; font-style: italic; font-display: swap; }
+
 .page {
-  --ff: "Times New Roman", Times, Georgia, serif;
+  --ff: "CMU Serif", "Latin Modern Roman", "Times New Roman", Times, serif;
   --pw: 794px;
   --ph: 1123px;
-  --m: 0.6in;
-  --fs: 10.5pt;
+  --m: 0.5in;
+  --fs: 11pt;
   position: relative;
   box-sizing: border-box;
   width: var(--pw);
@@ -14,9 +19,10 @@
   color: #000;
   font-family: var(--ff);
   font-size: var(--fs);
-  line-height: 1.28;
+  line-height: 1.22;
   transform-origin: top left;
   overflow-wrap: anywhere;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* page-end marker, preview only */
@@ -30,19 +36,31 @@
     rgba(200, 50, 50, .55) calc(var(--ph) - 2px), rgba(200, 50, 50, .55) var(--ph));
 }
 
-.page h1 { margin: 0; font-size: 2.1em; line-height: 1.1; font-weight: 700; }
-.page .contact { margin: 4pt 0 0; }
-.page .contact a { color: inherit; text-decoration: none; }
-.page .sep { padding: 0 .35em; }
+/* header */
+.page header { position: relative; text-align: center; padding-top: 2pt; }
+.page h1 {
+  margin: 0;
+  font-size: 2.35em;
+  line-height: 1.1;
+  font-weight: 400;
+  font-variant: small-caps;
+  letter-spacing: .01em;
+}
+.page .contact { margin: 5pt 0 0; font-size: .9em; }
+.page .contact a, .page a { color: inherit; text-decoration: none; }
+.page .sep { padding: 0 .5em; }
+.page .logo { position: absolute; left: 0; top: 0; height: 3.6em; width: auto; max-width: 5em; object-fit: contain; }
+.page header.has-logo { min-height: 3.6em; }
 
+/* section headings: small caps, bold, thin rule (as in the common LaTeX resume class) */
 .page h2 {
-  margin: 9pt 0 3pt;
+  margin: 8pt 0 4pt;
   padding-bottom: 1pt;
-  font-size: 1em;
+  font-size: 1.2em;
   font-weight: 700;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  border-bottom: .75pt solid #000;
+  font-variant: small-caps;
+  line-height: 1.15;
+  border-bottom: .5pt solid #000;
   break-after: avoid;
 }
 
@@ -51,29 +69,33 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 12pt;
+  gap: 14pt;
   break-inside: avoid;
 }
 .page .row .r { text-align: right; white-space: nowrap; }
-.page .entry { margin-top: 4pt; }
+.page .entry { margin-top: 5pt; }
 .page .entry:first-of-type { margin-top: 0; }
-.page .skill + .skill { margin-top: 1pt; }
-.page ul { margin: 1.5pt 0 0; padding-left: 14pt; list-style: disc; }
-.page li { margin: 0 0 1pt; padding-left: 1pt; }
-.page .detail { margin-top: 1pt; }
-.page a { color: inherit; text-decoration: none; }
+.page .sub { font-size: .9em; }                 /* second line of Education */
+.page .head .r { font-weight: 700; font-size: .9em; }
+.page .skills { font-size: .92em; }
+.page .skill { margin-bottom: 3pt; }
+.page .detail { margin-top: 1pt; font-size: .9em; }
 
-/* Classic: centred name, serif */
-.page.t-classic header { text-align: center; }
+.page ul { margin: 2pt 0 0; padding-left: 1.2em; list-style: disc; font-size: .92em; }
+.page li { margin: 0 0 1.5pt; padding-left: .1em; }
+.page li::marker { font-size: .75em; }
+.page section > ul:only-child { margin-top: 0; }
 
-/* Modern: left aligned, sans-serif, navy name and rules */
+/* Modern: sans-serif, left aligned, navy accents */
 .page.t-modern {
   --ff: Arial, Helvetica, "Liberation Sans", sans-serif;
-  font-size: calc(var(--fs) - .5pt);
+  font-size: calc(var(--fs) - .75pt);
+  line-height: 1.28;
 }
 .page.t-modern header { text-align: left; }
-.page.t-modern h1 { font-size: 2em; color: #1f3a5f; letter-spacing: -.01em; }
-.page.t-modern h2 { color: #1f3a5f; border-bottom: 1pt solid #1f3a5f; font-size: .95em; }
+.page.t-modern h1 { font-size: 2em; font-weight: 700; font-variant: normal; color: #1f3a5f; letter-spacing: -.01em; }
+.page.t-modern h2 { font-variant: normal; text-transform: uppercase; letter-spacing: .06em; font-size: .95em; color: #1f3a5f; border-bottom: 1pt solid #1f3a5f; }
+.page.t-modern .logo { left: auto; right: 0; }
 
 @media print {
   .page {

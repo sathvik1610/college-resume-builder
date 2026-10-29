@@ -70,6 +70,22 @@
           <input type="range" min="0.4" max="1" step="0.05" data-path="settings.margin">
         </label>
       </div>
+      <div class="grid">
+        <label class="f"><span>Links</span>
+          <select data-path="settings.linkStyle">
+            <option value="label">Short labels (GitHub, LinkedIn)</option>
+            <option value="url">Full addresses</option>
+          </select>
+        </label>
+        <label class="f check"><span>College logo</span>
+          <span class="inl"><input type="checkbox" data-path="settings.showLogo"> Show on resume <em id="logo-state" class="muted"></em></span>
+        </label>
+        <div class="f full btn-row">
+          <button type="button" onclick="document.getElementById('logo-in').click()">Upload logo</button>
+          <button type="button" data-act="logo-remove">Remove logo</button>
+          <input type="file" id="logo-in" accept="image/png,image/jpeg,image/svg+xml" hidden>
+        </div>
+      </div>
       <p class="hint">Both templates are single column with plain text headings. No tables, icons, photos or graphics, so ATS software reads them correctly.</p>
     </details>
 

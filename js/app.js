@@ -74,7 +74,7 @@
       id: 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
       name: name || 'My resume',
       updated: Date.now(),
-      settings: { template: 'classic', paper: 'A4', fontSize: 10.5, margin: 0.6, order: DEFAULT_ORDER.slice() },
+      settings: { template: 'classic', paper: 'A4', fontSize: 11, margin: 0.5, linkStyle: 'label', showLogo: true, order: DEFAULT_ORDER.slice() },
       basics: Object.fromEntries(BASICS.map(f => [f.k, ''])),
       summary: '', achievements: ''
     };
@@ -151,7 +151,7 @@
       if (raw && raw.resumes && Object.keys(raw.resumes).length) {
         const resumes = {};
         for (const [id, r] of Object.entries(raw.resumes)) resumes[id] = normalise({ ...r, id });
-        db = { current: resumes[raw.current] ? raw.current : Object.keys(resumes)[0], resumes };
+        db = { current: resumes[raw.current] ? raw.current : Object.keys(resumes)[0], resumes, logo: raw.logo };
         return;
       }
     } catch (e) { /* first run or corrupt data: start fresh */ }
@@ -182,12 +182,15 @@
   const range = (a, b) => [a, b].map(x => String(x || '').trim()).filter(Boolean).join(' – ');
   const wordCount = s => s.split(/\s+/).filter(Boolean).length;
 
-  function link(u) {
+  let linkStyle = 'label';
+  function link(u, label) {
     u = String(u || '').trim();
     if (!u) return '';
     const href = /^(https?:|mailto:)/i.test(u) ? u : 'https://' + u;
-    return `<a href="${esc(href)}">${esc(u.replace(/^https?:\/\//i, '').replace(/\/$/, ''))}</a>`;
+    const shown = linkStyle === 'label' && label ? label : u.replace(/^https?:\/\//i, '').replace(/\/$/, '');
+    return `<a href="${esc(href)}">${esc(shown)}</a>`;
   }
+  const guessLabel = u => /github\.com/i.test(u) ? 'GitHub' : /(gitlab|bitbucket)\./i.test(u) ? 'Code' : 'Link';
 
   function getPath(o, p) { return p.split('.').reduce((a, k) => (a == null ? a : a[k]), o); }
   function setPath(o, p, v) {
@@ -205,13 +208,15 @@
   const RENDER = {
     summary: r => r.summary.trim() ? `<p>${esc(r.summary.trim())}</p>` : '',
     education: r => r.education.filter(has).map(e =>
-      `<div class="entry">${row(`<b>${esc(e.school)}</b>`, esc(e.location))}` +
-      row(`<i>${esc(e.degree)}</i>${e.score ? ` | ${esc(e.score)}` : ''}`, esc(range(e.start, e.end))) +
-      (e.details.trim() ? `<p class="detail">Relevant coursework: ${esc(e.details.trim())}</p>` : '') + '</div>').join(''),
-    skills: r => r.skills.filter(s => s.items.trim()).map(s =>
-      `<p class="skill">${s.label.trim() ? `<b>${esc(s.label.trim())}:</b> ` : ''}${esc(s.items.trim())}</p>`).join(''),
+      `<div class="entry">${row(`<b>${esc(e.school)}</b>${e.location ? `, ${esc(e.location)}` : ''}`, `<b>${esc(range(e.start, e.end))}</b>`)}` +
+      (e.degree || e.score ? row(`<i>${esc(e.degree)}</i>`, `<i>${esc(e.score)}</i>`).replace('class="row"', 'class="row sub"') : '') +
+      (e.details.trim() ? `<p class="detail"><b>Coursework:</b> ${esc(e.details.trim())}</p>` : '') + '</div>').join(''),
+    skills: r => {
+      const l = r.skills.filter(s => s.items.trim());
+      return l.length ? `<div class="skills">${l.map(s => `<p class="skill">${s.label.trim() ? `<b>${esc(s.label.trim())}:</b> ` : ''}${esc(s.items.trim())}</p>`).join('')}</div>` : '';
+    },
     projects: r => r.projects.filter(has).map(p =>
-      `<div class="entry">${row(`<b>${esc(p.name)}</b>${p.tech ? ` | <i>${esc(p.tech)}</i>` : ''}`, [link(p.link), esc(p.date)].filter(Boolean).join(' | '))}${bullets(p.bullets)}</div>`).join(''),
+      `<div class="entry">${row(`<b>${esc(p.name)}</b>${p.tech ? ` | <i>${esc(p.tech)}</i>` : ''}${p.link.trim() ? ' | ' + link(p.link, guessLabel(p.link)) : ''}`, esc(p.date)).replace('class="row"', 'class="row head"')}${bullets(p.bullets)}</div>`).join(''),
     experience: r => roles(r.experience),
     leadership: r => roles(r.leadership),
     certifications: r => {
@@ -224,16 +229,22 @@
     achievements: r => bullets(r.achievements)
   };
   function roles(list) {
-    return list.filter(has).map(e =>
-      `<div class="entry">${row(`<b>${esc(e.role)}</b>`, esc(range(e.start, e.end)))}` +
-      (e.org || e.location ? row(`<i>${esc(e.org)}</i>`, esc(e.location)) : '') + bullets(e.bullets) + '</div>').join('');
+    return list.filter(has).map(e => {
+      const left = [e.org && `<b>${esc(e.org)}</b>`, esc(e.role), e.location && `<i>${esc(e.location)}</i>`].filter(Boolean).join(' | ');
+      return `<div class="entry">${row(left, esc(range(e.start, e.end))).replace('class="row"', 'class="row head"')}${bullets(e.bullets)}</div>`;
+    }).join('');
   }
+
+  function logoSrc() { return db.logo || COLLEGE.logo || ''; }
 
   function resumeHTML(r) {
     const b = r.basics;
+    linkStyle = r.settings.linkStyle;
     const contact = [esc(b.location), esc(b.phone), b.email && `<a href="mailto:${esc(b.email)}">${esc(b.email)}</a>`,
-      link(b.linkedin), link(b.github), link(b.portfolio)].filter(Boolean).join('<span class="sep">|</span>');
-    let h = `<header><h1>${esc(b.name.trim()) || 'Your Name'}</h1>${contact ? `<p class="contact">${contact}</p>` : ''}</header>`;
+      link(b.linkedin, 'LinkedIn'), link(b.github, 'GitHub'), link(b.portfolio, 'Portfolio')].filter(Boolean).join('<span class="sep">|</span>');
+    const logo = r.settings.showLogo && logoSrc();
+    let h = `<header${logo ? ' class="has-logo"' : ''}>${logo ? `<img class="logo" src="${esc(logo)}" alt="College logo" onerror="this.remove()">` : ''}` +
+      `<h1>${esc(b.name.trim()) || 'Your Name'}</h1>${contact ? `<p class="contact">${contact}</p>` : ''}</header>`;
     for (const key of r.settings.order) {
       const body = RENDER[key](r);
       if (body) h += `<section><h2>${esc(SECTIONS[key].title)}</h2>${body}</section>`;
@@ -351,7 +362,8 @@
 
   function renderSettings() {
     const s = cur().settings;
-    document.querySelectorAll('[data-path^="settings."]').forEach(el => { el.value = s[el.dataset.path.slice(9)]; });
+    document.querySelectorAll('[data-path^="settings."]').forEach(el => { const v = s[el.dataset.path.slice(9)]; if (el.type === 'checkbox') el.checked = !!v; else el.value = v; });
+    $('#logo-state').textContent = logoSrc() ? '(logo added)' : '(no logo yet)';
     $('#out-fs').textContent = s.fontSize + ' pt';
     $('#out-m').textContent = s.margin + ' in';
   }
@@ -381,6 +393,7 @@
     if (!p) return;
     let v = e.target.value;
     if (e.target.type === 'range') v = parseFloat(v);
+    if (e.target.type === 'checkbox') v = e.target.checked;
     setPath(cur(), p, v);
     if (p.startsWith('settings.')) renderSettings();
     touch();
@@ -461,6 +474,7 @@
       document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b === el));
       if (el.dataset.tab === 'preview') requestAnimationFrame(fit);
     },
+    'logo-remove'() { delete db.logo; COLLEGE.logo = ''; scheduleSave(); renderSettings(); renderPreview(); },
     'export-json'() { download(slug(cur().name) + '.json', JSON.stringify({ app: 'college-resume-builder', version: 1, resume: cur() }, null, 2), 'application/json'); },
     'export-txt'() { download(slug(cur().basics.name || cur().name) + '.txt', toText(cur()), 'text/plain'); },
     import() { $('#file-in').click(); },
@@ -508,6 +522,25 @@
     if (fn) fn(el);
   });
 
+  $('#logo-in').addEventListener('change', e => {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    const img = new Image();
+    img.onload = () => {
+      // shrink so the saved logo stays small (max 300px on the long side)
+      const k = Math.min(1, 300 / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      db.logo = c.toDataURL('image/png');
+      cur().settings.showLogo = true;
+      scheduleSave(); renderSettings(); renderPreview();
+    };
+    img.onerror = () => alert('Could not read that image. Use a PNG, JPG or SVG file.');
+    img.src = URL.createObjectURL(file);
+  });
+
   $('#file-in').addEventListener('change', e => {
     const file = e.target.files[0];
     e.target.value = '';
@@ -532,6 +565,7 @@
   window.addEventListener('beforeprint', () => { oldTitle = document.title; document.title = slug(cur().basics.name) + '_Resume'; });
   window.addEventListener('afterprint', () => { if (oldTitle) document.title = oldTitle; });
 
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   if ('ResizeObserver' in window) new ResizeObserver(() => fit()).observe($('#preview-wrap'));
   else window.addEventListener('resize', fit);
 
