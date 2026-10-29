@@ -81,7 +81,7 @@
 
 /* Modern: sans-serif, left aligned, navy accents */
 .page.t-modern {
-  --ra: #8b1a1a;
+  --ra: #0b2f8f;
   --ff: Arial, Helvetica, "Liberation Sans", sans-serif;
   font-size: calc(var(--fs) - .75pt);
   line-height: 1.28;

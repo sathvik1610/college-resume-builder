@@ -20,7 +20,7 @@ export default defineConfig({
         scope: './',
         display: 'standalone',
         background_color: '#f6f5f2',
-        theme_color: '#8b1a1a',
+        theme_color: '#051b50',
         icons: [{ src: 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' }],
       },
       workbox: { globPatterns: ['**/*.{js,css,html,svg,jpg,ttf,woff,woff2}'] },

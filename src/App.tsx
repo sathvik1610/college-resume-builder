@@ -104,7 +104,7 @@ export default function App() {
 
   return (
     <div className="flex h-full flex-col print:block print:h-auto">
-      <header className="grid shrink-0 grid-cols-1 items-center gap-x-4 gap-y-2 bg-header px-4 py-2 text-primary-foreground sm:grid-cols-[1fr_auto_1fr] sm:px-5 sm:py-3 print:hidden">
+      <header className="grid shrink-0 grid-cols-1 items-center gap-x-4 gap-y-2 bg-linear-to-r from-header-from to-header-to px-4 py-2 text-primary-foreground sm:grid-cols-[1fr_auto_1fr] sm:px-5 sm:py-3 print:hidden">
         <div className="order-2 hidden min-w-0 sm:order-1 sm:block">
           <span role="status" aria-live="polite" className="text-[13px] opacity-80">{saveText}</span>
         </div>
@@ -121,7 +121,7 @@ export default function App() {
             className="text-primary-foreground hover:bg-white/15 hover:text-primary-foreground">
             {dark ? <Sun /> : <Moon />}
           </Button>
-          <Button onClick={savePdf} disabled={busy} className="bg-white font-semibold text-[oklch(0.4_0.14_25)] hover:bg-white/90">
+          <Button onClick={savePdf} disabled={busy} className="bg-white font-semibold text-[#0a2a80] hover:bg-white/90">
             {busy ? <Loader2 className="animate-spin" /> : <Download />} {busy ? 'Preparing…' : 'Download PDF'}
           </Button>
         </div>
