@@ -1,10 +1,12 @@
 // Cache-first app shell with background refresh, so the tool works offline after the first visit.
 // Bump VERSION whenever any cached file changes.
-const VERSION = 'crb-v4';
+const VERSION = 'crb-v5';
 const SHELL = [
   './', 'index.html', 'css/app.css', 'css/resume.css',
   'js/config.js', 'js/app.js', 'manifest.webmanifest', 'icon.svg', 'assets/logo.jpg',
-  'fonts/cmunrm.woff', 'fonts/cmunbx.woff', 'fonts/cmunti.woff', 'fonts/cmunbi.woff'
+  'fonts/cmunrm.woff', 'fonts/cmunbx.woff', 'fonts/cmunti.woff', 'fonts/cmunbi.woff',
+  'fonts/plex-sans-400.woff2', 'fonts/plex-sans-500.woff2', 'fonts/plex-sans-600.woff2', 'fonts/plex-sans-700.woff2',
+  'fonts/plex-serif-600.woff2', 'fonts/plex-serif-700.woff2'
 ];
 
 self.addEventListener('install', e => {
