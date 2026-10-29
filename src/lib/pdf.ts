@@ -173,7 +173,8 @@ export async function makePdfBlob(r: Resume, userLogo: string | undefined, fonts
             : (italic ? StandardFonts.HelveticaOblique : StandardFonts.Helvetica))
         } else {
           const url = bold ? (italic ? fonts.boldItalic : fonts.bold) : (italic ? fonts.italic : fonts.regular)
-          f = await doc.embedFont(await bytes(url))
+          // no ligatures: the preview turns them off too, so every letter sits where the browser put it
+          f = await doc.embedFont(await bytes(url), { features: { liga: false, clig: false, dlig: false } })
         }
         fontCache.set(k, f)
       }

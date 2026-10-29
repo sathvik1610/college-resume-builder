@@ -23,6 +23,8 @@
   transform-origin: top left;
   overflow-wrap: anywhere;
   -webkit-font-smoothing: antialiased;
+  font-variant-ligatures: none;      /* "fi" stays two letters, in the preview and in the PDF */
+  font-feature-settings: "liga" 0, "clig" 0;
 }
 
 /* header */
@@ -36,7 +38,7 @@
   letter-spacing: .01em;
 }
 .page .contact { margin: 5pt 0 0; font-size: .9em; }
-.page .contact a, .page a { color: inherit; text-decoration: none; }
+.page .contact a, .page a { color: #0b57d0; text-decoration: none; }  /* links are blue */
 .page .sep { padding: 0 .5em; }
 .page .logo { position: absolute; left: 0; top: 0; height: 3.6em; width: auto; max-width: 5em; object-fit: contain; }
 .page header.has-logo { min-height: 3.6em; }
