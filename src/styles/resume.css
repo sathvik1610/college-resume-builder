@@ -75,7 +75,7 @@
 
 .page ul { margin: 2pt 0 0; padding-left: 1.2em; list-style: none; font-size: .92em; }
 .page li { position: relative; margin: 0 0 1.5pt; padding-left: .1em; }
-.page li .bl { position: absolute; left: -.8em; top: .13em; font-size: .66em; line-height: inherit; }  /* top nudges the dot down to the middle of the text */
+.page li .bl { position: absolute; left: -.8em; top: .22em; font-size: .66em; line-height: inherit; }  /* top nudges the dot down to the middle of the text */
 .page section > ul:only-child { margin-top: 0; }
 
 /* Modern: sans-serif, left aligned, navy accents */
