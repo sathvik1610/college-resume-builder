@@ -1,5 +1,7 @@
 import { SECTIONS, title, type Resume, type SectionKey } from './model'
-import { lines } from './render'
+import { lines as rawLines, plain } from './render'
+
+const lines = (t: string) => rawLines(plain(t))
 
 const has = (o: Record<string, string>) => Object.values(o).some(v => String(v).trim())
 const range = (a: string, b: string) => [a, b].map(x => String(x || '').trim()).filter(Boolean).join(' – ')
@@ -15,7 +17,7 @@ export function toText(r: Resume): string {
   )
   for (const key of r.settings.order as SectionKey[]) {
     const block: string[] = []
-    if (key === 'summary' && r.summary.trim()) block.push(r.summary.trim())
+    if (key === 'summary' && r.summary.trim()) block.push(plain(r.summary.trim()))
     if (key === 'achievements') lines(r.achievements).forEach(x => block.push('- ' + x))
     if (key === 'skills') r.skills.filter(x => x.items.trim()).forEach(x => block.push(`${x.label}: ${x.items}`))
     if (key === 'education') r.education.filter(has).forEach(e =>
@@ -35,7 +37,7 @@ export function toText(r: Resume): string {
   return L.join('\n')
 }
 
-export function download(name: string, text: string, type: string) {
+export function download(name: string, text: string | Blob, type: string) {
   const a = document.createElement('a')
   a.href = URL.createObjectURL(new Blob([text], { type }))
   a.download = name

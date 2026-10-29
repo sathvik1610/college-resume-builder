@@ -1,5 +1,5 @@
 import { useId, useRef, useState, type ReactNode } from 'react'
-import { ArrowDown, ArrowUp, Plus, Trash2, Upload } from 'lucide-react'
+import { ArrowDown, ArrowUp, Bold, Plus, Trash2, Upload } from 'lucide-react'
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from '@/components/ui/accordion'
@@ -36,14 +36,62 @@ interface Props {
 
 /* ---------- small building blocks ---------- */
 
+/* Textarea with a Bold button. Bold text is stored as **text**. */
+function RichArea({ id, value, rows, placeholder, label, onChange }: {
+  id?: string; value: string; rows?: number; placeholder?: string; label?: string; onChange: (v: string) => void
+}) {
+  const ref = useRef<HTMLTextAreaElement>(null)
+
+  const toggleBold = () => {
+    const el = ref.current
+    if (!el) return
+    const a = el.selectionStart, b = el.selectionEnd
+    let next: string, from: number, to: number
+    const wrapped = a >= 2 && value.slice(a - 2, a) === '**' && value.slice(b, b + 2) === '**'
+    if (wrapped) {                       // already bold: remove the markers
+      next = value.slice(0, a - 2) + value.slice(a, b) + value.slice(b + 2)
+      from = a - 2; to = b - 2
+    } else if (a === b) {                // nothing selected: bold the word at the cursor
+      let s = a, e = a
+      while (s > 0 && /\S/.test(value[s - 1])) s--
+      while (e < value.length && /\S/.test(value[e])) e++
+      if (s === e) {                     // empty spot: insert markers and place the cursor between them
+        next = value.slice(0, a) + '****' + value.slice(a)
+        from = to = a + 2
+      } else {
+        next = value.slice(0, s) + '**' + value.slice(s, e) + '**' + value.slice(e)
+        from = s + 2; to = e + 2
+      }
+    } else {
+      next = value.slice(0, a) + '**' + value.slice(a, b) + '**' + value.slice(b)
+      from = a + 2; to = b + 2
+    }
+    onChange(next)
+    requestAnimationFrame(() => { el.focus(); el.setSelectionRange(from, to) })
+  }
+
+  return (
+    <div className="grid gap-1.5">
+      <div className="flex items-center justify-between gap-2">
+        {label && <Label htmlFor={id} className="text-[13px] text-foreground/80">{label}</Label>}
+        <Button type="button" variant="outline" size="xs" className="ml-auto" onClick={toggleBold}
+          aria-label="Bold the selected text" title="Bold the selected text (Ctrl+B)"><Bold /> Bold</Button>
+      </div>
+      <Textarea id={id} ref={ref} rows={rows ?? 3} value={value} placeholder={placeholder} aria-label={label}
+        onChange={e => onChange(e.target.value)}
+        onKeyDown={e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') { e.preventDefault(); toggleBold() } }}
+        className="min-h-0 resize-y leading-snug" />
+    </div>
+  )
+}
+
 function Fld({ field, value, onChange }: { field: Field; value: string; onChange: (v: string) => void }) {
   const id = useId()
   return (
     <div className={cn('grid gap-1.5', field.w === 'full' && 'col-span-2')}>
-      <Label htmlFor={id} className="text-[13px] text-foreground/80">{field.l}</Label>
+      {field.t !== 'area' && <Label htmlFor={id} className="text-[13px] text-foreground/80">{field.l}</Label>}
       {field.t === 'area' ? (
-        <Textarea id={id} rows={field.rows ?? 3} value={value} placeholder={field.ph}
-          onChange={e => onChange(e.target.value)} className="min-h-0 resize-y leading-snug" />
+        <RichArea id={id} label={field.l} rows={field.rows} value={value} placeholder={field.ph} onChange={onChange} />
       ) : (
         <Input id={id} className="w-full" value={value} placeholder={field.ph} list={field.list} autoComplete="off"
           onChange={e => onChange(e.target.value)} />
@@ -280,8 +328,8 @@ export function Editor({ db, resume: r, update, checks }: Props) {
                 </div>
                 {s.hint && <Hint>{s.hint}</Hint>}
                 {s.kind === 'text' ? (
-                  <Textarea aria-label={t} rows={s.rows} value={r[key as 'summary']}
-                    onChange={e => update(x => { x[key as 'summary'] = e.target.value })} className="min-h-0 resize-y leading-snug" />
+                  <RichArea label={t} rows={s.rows} value={r[key as 'summary']}
+                    onChange={v => update(x => { x[key as 'summary'] = v })} />
                 ) : (
                   <>
                     {r[key as 'projects'].map((item, i) => (
@@ -317,7 +365,7 @@ export function Editor({ db, resume: r, update, checks }: Props) {
       </div>
 
       <p className="px-1 text-xs text-muted-foreground">
-        To save a PDF choose <em>Save as PDF</em> in the print dialog and turn off <em>Headers and footers</em>.
+        Download PDF saves a real PDF file with selectable text, sized exactly to the paper you chose. Select text in a bullet and press Bold (or Ctrl+B) to make it bold.
       </p>
 
       <AlertDialog open={confirmSample} onOpenChange={setConfirmSample}>

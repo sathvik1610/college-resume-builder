@@ -10,8 +10,23 @@ export const esc = (s: unknown) =>
   String(s == null ? '' : s).replace(/[&<>"']/g, c =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string)
 
+// **text** marks bold text inside bullets, summary and coursework.
+export const plain = (s: string) => String(s || '').replace(/\*\*(.+?)\*\*/g, '$1')
+export const richHtml = (s: string) => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+export const richSegments = (s: string): { t: string; b: boolean }[] => {
+  const out: { t: string; b: boolean }[] = []
+  let last = 0
+  for (const m of String(s || '').matchAll(/\*\*(.+?)\*\*/g)) {
+    if (m.index! > last) out.push({ t: s.slice(last, m.index), b: false })
+    out.push({ t: m[1], b: true })
+    last = m.index! + m[0].length
+  }
+  if (last < s.length) out.push({ t: s.slice(last), b: false })
+  return out
+}
+
 export const lines = (t: string) =>
-  String(t || '').split('\n').map(l => l.replace(/^\s*[-•*·]\s*/, '').trim()).filter(Boolean)
+  String(t || '').split('\n').map(l => l.replace(/^\s*(?:[-•·]|\*(?!\*))\s*/, '').trim()).filter(Boolean)
 
 const has = (o: Item) => Object.values(o).some(v => String(v).trim())
 const range = (a: string, b: string) =>
@@ -37,7 +52,7 @@ const row = (l: string, r: string, cls = '') =>
 
 const bullets = (t: string) => {
   const l = lines(t)
-  return l.length ? `<ul>${l.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''
+  return l.length ? `<ul>${l.map(x => `<li>${richHtml(x)}</li>`).join('')}</ul>` : ''
 }
 
 export function resumeHTML(r: Resume, userLogo?: string): string {
@@ -50,11 +65,11 @@ export function resumeHTML(r: Resume, userLogo?: string): string {
   }).join('')
 
   const RENDER: Record<SectionKey, () => string> = {
-    summary: () => r.summary.trim() ? `<p>${esc(r.summary.trim())}</p>` : '',
+    summary: () => r.summary.trim() ? `<p>${richHtml(r.summary.trim())}</p>` : '',
     education: () => r.education.filter(has).map(e =>
       `<div class="entry">${row(`<b>${esc(e.school)}</b>${e.location ? `, ${esc(e.location)}` : ''}`, `<b>${esc(range(e.start, e.end))}</b>`)}` +
       (e.degree || e.score ? row(`<i>${esc(e.degree)}</i>`, `<i>${esc(e.score)}</i>`, 'sub') : '') +
-      (e.details.trim() ? `<p class="detail"><b>Coursework:</b> ${esc(e.details.trim())}</p>` : '') + '</div>').join(''),
+      (e.details.trim() ? `<p class="detail"><b>Coursework:</b> ${richHtml(e.details.trim())}</p>` : '') + '</div>').join(''),
     skills: () => {
       const l = r.skills.filter(s => s.items.trim())
       return l.length

@@ -1,9 +1,9 @@
 import type { Resume } from './model'
-import { lines } from './render'
+import { lines, plain } from './render'
 
 export interface Check { ok: boolean; text: string }
 
-const wordCount = (s: string) => s.split(/\s+/).filter(Boolean).length
+const wordCount = (s: string) => plain(s).split(/\s+/).filter(Boolean).length
 
 export function runChecks(r: Resume, pages: number): Check[] {
   const out: Check[] = []

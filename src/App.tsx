@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Copy, Download, FilePlus2, Pencil, Trash2 } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { Copy, Download, FilePlus2, Loader2, Pencil, Trash2 } from 'lucide-react'
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -15,8 +15,8 @@ import { Editor } from '@/components/Editor'
 import { Preview } from '@/components/Preview'
 import { COLLEGE } from '@/config'
 import { runChecks } from '@/lib/checks'
-import { slug } from '@/lib/exporters'
 import { blankResume, normalise } from '@/lib/model'
+import { downloadPdf } from '@/lib/pdfClient'
 import { logoSrc } from '@/lib/render'
 import { useStore } from '@/lib/store'
 
@@ -28,20 +28,18 @@ export default function App() {
   const [view, setView] = useState<'edit' | 'preview'>('edit')
   const [dlg, setDlg] = useState<Dlg>(null)
   const [nameDraft, setNameDraft] = useState('')
+  const [busy, setBusy] = useState(false)
 
   const checks = useMemo(() => runChecks(resume, pages), [resume, pages])
   const logo = logoSrc(db.logo)
   const list = Object.values(db.resumes).sort((a, b) => b.updated - a.updated)
 
-  // Nice PDF file name when saving from the print dialog.
-  useEffect(() => {
-    let old = ''
-    const before = () => { old = document.title; document.title = slug(resume.basics.name) + '_Resume' }
-    const after = () => { if (old) document.title = old }
-    window.addEventListener('beforeprint', before)
-    window.addEventListener('afterprint', after)
-    return () => { window.removeEventListener('beforeprint', before); window.removeEventListener('afterprint', after) }
-  }, [resume.basics.name])
+  const savePdf = async () => {
+    setBusy(true)
+    try { await downloadPdf(resume, db.logo) }
+    catch (e) { console.error(e); alert('Could not create the PDF. Please try again.') }
+    finally { setBusy(false) }
+  }
 
   const open = (d: Dlg) => {
     setNameDraft(d === 'new' ? `Resume ${list.length + 1}` : d === 'rename' ? resume.name : '')
@@ -103,8 +101,8 @@ export default function App() {
         </div>
         <div className="ml-auto flex items-center gap-3">
           <span role="status" aria-live="polite" className="hidden text-[13px] opacity-85 sm:inline">{saveText}</span>
-          <Button variant="secondary" onClick={() => window.print()} className="font-semibold text-primary">
-            <Download /> Download PDF
+          <Button variant="secondary" onClick={savePdf} disabled={busy} className="font-semibold text-primary">
+            {busy ? <Loader2 className="animate-spin" /> : <Download />} {busy ? 'Preparing…' : 'Download PDF'}
           </Button>
         </div>
       </header>
