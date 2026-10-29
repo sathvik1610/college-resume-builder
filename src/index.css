@@ -20,6 +20,7 @@
     --font-sans: "ABC Repro", "Hanken Grotesk", "Segoe UI", Arial, sans-serif;
     --font-display: "ABC Repro", "Hanken Grotesk", "Segoe UI", Arial, sans-serif;
     --color-header-from: var(--header-from);
+    --color-header-via: var(--header-via);
     --color-header-to: var(--header-to);
     --color-ring: var(--ring);
     --color-input: var(--input);
@@ -69,8 +70,9 @@
     --input: oklch(0.86 0.016 262);
     --ring: oklch(0.62 0.17 262);
     --radius: 0.5rem;
-    --header-from: #0b2468;                    /* title bar gradient, left */
-    --header-to: #0a3cae;                      /* title bar gradient, right */
+    --header-from: #030c33;                    /* title bar gradient: near-black navy ... */
+    --header-via: #0a2470;                     /* ... through deep blue ... */
+    --header-to: #1340b4;                      /* ... to royal blue */
 }
 
 .dark {
@@ -93,8 +95,9 @@
     --border: oklch(1 0 0 / 11%);
     --input: oklch(1 0 0 / 16%);
     --ring: oklch(0.65 0.16 262);
-    --header-from: #030f33;
-    --header-to: #001a5c;
+    --header-from: #020816;
+    --header-via: #061849;
+    --header-to: #0b2c82;
 }
 
 @layer base {

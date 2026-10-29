@@ -100,8 +100,8 @@ export default function App() {
 
   return (
     <div className="flex h-full flex-col print:block print:h-auto">
-      <header className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 bg-linear-to-r from-header-from to-header-to px-4 py-2.5 text-primary-foreground sm:px-6 print:hidden">
-        <div className="flex items-center gap-3.5">
+      <header className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 bg-linear-to-r from-header-from via-header-via to-header-to px-4 py-2.5 text-primary-foreground sm:px-6 print:hidden">
+        <div className="flex items-center gap-4 sm:gap-6">
           {logo && (
             <img src={logo} alt=""
               className={db.logo
