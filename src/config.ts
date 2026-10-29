@@ -1,7 +1,7 @@
 // College settings. Edit this file to brand the tool for your institution.
 export const COLLEGE = {
   name: 'Indian Institute of Technology Tirupati', // shown in the header and pre-filled in the first Education entry
-  location: 'Tirupati, Andhra Pradesh',            // pre-filled as the Education location
+  location: '',                                    // optional: pre-filled as the Education location (empty by default)
   logo: `${import.meta.env.BASE_URL}assets/logo.jpg`, // official logo: replace public/assets/logo.jpg
   degrees: [                                       // suggestions in the Degree field
     'B.Tech in Computer Science and Engineering',

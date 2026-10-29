@@ -204,19 +204,18 @@ export async function makePdfBlob(r: Resume, userLogo: string | undefined, fonts
       pg.drawText(text, { x: a.x * PT, y, size: size * PT, font, color: rgb(...a.color) })
     }
 
-    // rules under section headings
+    // rules under section headings (thickness comes from the --rule CSS variable, in points)
     for (const h of page.querySelectorAll('h2')) {
       const cs = getComputedStyle(h)
-      const bw = parseFloat(cs.borderBottomWidth)
-      if (!bw) continue
+      const rulePt = parseFloat(cs.getPropertyValue('--rule')) || 0.6
       const rc = h.getBoundingClientRect()
       const dy = shiftOf(h)
-      const yPx = rc.bottom - ar.top - bw / 2 + dy
+      const yPx = rc.bottom - ar.top - rulePt / PT / 2 + dy
       const { idx, pg } = pageAt(rc.top - ar.top + dy)
       const y = hPt - (yPx - idx * paper.h) * PT
       pg.drawLine({
         start: { x: (rc.left - ar.left) * PT, y }, end: { x: (rc.right - ar.left) * PT, y },
-        thickness: bw * PT, color: rgb(...parseColor(cs.borderBottomColor)),
+        thickness: rulePt, color: rgb(...parseColor(cs.color)),
       })
     }
 

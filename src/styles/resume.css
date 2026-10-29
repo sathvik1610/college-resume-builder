@@ -45,13 +45,14 @@
 
 /* section headings: small caps, bold, thin rule (as in the common LaTeX resume class) */
 .page h2 {
+  --rule: .6pt;                      /* thickness of the line under a section heading */
   margin: 8pt 0 4pt;
-  padding-bottom: 1pt;
+  padding-bottom: 1.75pt;
   font-size: 1.2em;
   font-weight: 700;
   font-variant: small-caps;
   line-height: 1.15;
-  border-bottom: .5pt solid #000;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% var(--rule) no-repeat;
   break-after: avoid;
 }
 
@@ -74,7 +75,7 @@
 
 .page ul { margin: 2pt 0 0; padding-left: 1.2em; list-style: none; font-size: .92em; }
 .page li { position: relative; margin: 0 0 1.5pt; padding-left: .1em; }
-.page li .bl { position: absolute; left: -.85em; font-size: .8em; line-height: inherit; }
+.page li .bl { position: absolute; left: -.8em; font-size: .66em; line-height: inherit; }
 .page section > ul:only-child { margin-top: 0; }
 
 /* Modern: sans-serif, left aligned, navy accents */
@@ -86,5 +87,5 @@
 }
 .page.t-modern header { text-align: left; }
 .page.t-modern h1 { font-size: 2em; font-weight: 700; font-variant: normal; color: var(--ra); letter-spacing: -.01em; }
-.page.t-modern h2 { font-variant: normal; text-transform: uppercase; letter-spacing: .06em; font-size: .95em; color: var(--ra); border-bottom: 1pt solid var(--ra); }
+.page.t-modern h2 { font-variant: normal; text-transform: uppercase; letter-spacing: .06em; font-size: .95em; color: var(--ra); --rule: .8pt; }
 .page.t-modern .logo { left: auto; right: 0; }
