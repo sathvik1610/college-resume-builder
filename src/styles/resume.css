@@ -1,8 +1,8 @@
 /* The resume itself. Fonts are bundled (fonts/), so it looks the same offline and on every device. */
-@font-face { font-family: "CMU Serif"; src: url("../fonts/cmunrm.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "CMU Serif"; src: url("../fonts/cmunbx.woff") format("woff"); font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "CMU Serif"; src: url("../fonts/cmunti.woff") format("woff"); font-weight: 400; font-style: italic; font-display: swap; }
-@font-face { font-family: "CMU Serif"; src: url("../fonts/cmunbi.woff") format("woff"); font-weight: 700; font-style: italic; font-display: swap; }
+@font-face { font-family: "CMU Serif"; src: url("../fonts/cmunrm.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "CMU Serif"; src: url("../fonts/cmunbx.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "CMU Serif"; src: url("../fonts/cmunti.ttf") format("truetype"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "CMU Serif"; src: url("../fonts/cmunbi.ttf") format("truetype"); font-weight: 700; font-style: italic; font-display: swap; }
 
 .page {
   --ff: "CMU Serif", "Latin Modern Roman", "Times New Roman", Times, serif;
@@ -81,9 +81,9 @@
 .page .skill { margin-bottom: 3pt; }
 .page .detail { margin-top: 1pt; font-size: .9em; }
 
-.page ul { margin: 2pt 0 0; padding-left: 1.2em; list-style: disc; font-size: .92em; }
-.page li { margin: 0 0 1.5pt; padding-left: .1em; }
-.page li::marker { font-size: .75em; }
+.page ul { margin: 2pt 0 0; padding-left: 1.2em; list-style: none; font-size: .92em; }
+.page li { position: relative; margin: 0 0 1.5pt; padding-left: .1em; }
+.page li .bl { position: absolute; left: -.85em; font-size: .8em; line-height: inherit; }
 .page section > ul:only-child { margin-top: 0; }
 
 /* Modern: sans-serif, left aligned, navy accents */

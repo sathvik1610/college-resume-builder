@@ -23,7 +23,7 @@ export default defineConfig({
         theme_color: '#8b1a1a',
         icons: [{ src: 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' }],
       },
-      workbox: { globPatterns: ['**/*.{js,css,html,svg,jpg,woff,woff2}'] },
+      workbox: { globPatterns: ['**/*.{js,css,html,svg,jpg,ttf,woff,woff2}'] },
     }),
   ],
   resolve: { alias: { '@': path.resolve(__dirname, './src') } },

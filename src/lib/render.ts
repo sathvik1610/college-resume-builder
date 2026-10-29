@@ -52,7 +52,7 @@ const row = (l: string, r: string, cls = '') =>
 
 const bullets = (t: string) => {
   const l = lines(t)
-  return l.length ? `<ul>${l.map(x => `<li>${richHtml(x)}</li>`).join('')}</ul>` : ''
+  return l.length ? `<ul>${l.map(x => `<li><span class="bl">•</span>${richHtml(x)}</li>`).join('')}</ul>` : ''
 }
 
 export function resumeHTML(r: Resume, userLogo?: string): string {
@@ -85,7 +85,7 @@ export function resumeHTML(r: Resume, userLogo?: string): string {
     certifications: () => {
       const l = r.certifications.filter(c => c.name.trim()).map(c => {
         const extra = [c.issuer.trim(), c.date.trim()].filter(Boolean).join(', ')
-        return `<li>${esc(c.name.trim())}${extra ? ', ' + esc(extra) : ''}</li>`
+        return `<li><span class="bl">•</span>${esc(c.name.trim())}${extra ? ', ' + esc(extra) : ''}</li>`
       })
       return l.length ? `<ul>${l.join('')}</ul>` : ''
     },
