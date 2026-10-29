@@ -2,6 +2,8 @@
 
 A resume builder for students, branded for IIT Tirupati. It produces plain, single-column resumes that applicant tracking systems (ATS) parse correctly, and it runs entirely in the browser. No server, no account, no tracking.
 
+Live site: https://sathvik1610.github.io/college-resume-builder/
+
 Built with React, TypeScript, Tailwind CSS and [shadcn/ui](https://ui.shadcn.com).
 
 ## What it does
