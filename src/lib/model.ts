@@ -230,7 +230,7 @@ export function sample(): Resume {
   r.achievements = 'Finalist, inter-college hackathon, 2024, among **120 teams**.\nTop **5%** in an online coding contest series, 2024.'
   r.leadership = [
     { role: 'Technical Lead', org: 'Coding Club', location: '', start: '2024', end: 'Present',
-      bullets: 'Run weekly problem-solving sessions for about **60 first-year students**.\nOrganised a **24-hour hackathon** with **150+ participants** and 6 industry mentors.' },
+      bullets: 'Run weekly problem-solving sessions for about **60 first-year students**.' },
   ]
   return normalise(r)
 }
