@@ -3,19 +3,22 @@
 @import "shadcn/tailwind.css";
 @import "./styles/resume.css";
 
-@font-face { font-family: "Source Sans 3"; src: url("./fonts/source-sans-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "Source Sans 3"; src: url("./fonts/source-sans-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
-@font-face { font-family: "Source Sans 3"; src: url("./fonts/source-sans-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
 
-@font-face { font-family: "Playfair Display"; src: url("./fonts/playfair-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
-@font-face { font-family: "Playfair Display"; src: url("./fonts/playfair-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+
+/* UI font. "ABC Repro" is Docker's typeface and is licensed commercially, so it is not bundled.
+   Hanken Grotesk is the free stand-in. To use Repro, buy a web licence, put the .woff2 files in
+   src/fonts/ and add @font-face rules named "ABC Repro"; it is already first in the font stacks below. */
+@font-face { font-family: "Hanken Grotesk"; src: url("./fonts/hanken-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Hanken Grotesk"; src: url("./fonts/hanken-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Hanken Grotesk"; src: url("./fonts/hanken-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Hanken Grotesk"; src: url("./fonts/hanken-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
     --font-heading: var(--font-sans);
-    --font-sans: "Source Sans 3", "Segoe UI", Arial, sans-serif;
-    --font-display: "Playfair Display", Georgia, serif;
+    --font-sans: "ABC Repro", "Hanken Grotesk", "Segoe UI", Arial, sans-serif;
+    --font-display: "ABC Repro", "Hanken Grotesk", "Segoe UI", Arial, sans-serif;
     --color-header-from: var(--header-from);
     --color-header-to: var(--header-to);
     --color-ring: var(--ring);

@@ -48,4 +48,5 @@ In the print dialog choose **Save as PDF**, and turn off **Headers and footers**
 
 - Keep the resume output free of tables, columns, images and icon fonts. That is the point of the tool.
 - The resume is rendered from `src/lib/render.ts` and styled by `src/styles/resume.css`. The editor UI is in `src/components/`.
+- The UI font is Hanken Grotesk, a free stand-in for Docker's Repro (commercial). To use Repro, add its licensed .woff2 files and an `@font-face` named "ABC Repro" in `src/index.css`.
 - Fonts are bundled in `src/fonts/` (subset TrueType files) so the tool looks the same offline. The PDF exporter (`src/lib/pdf.ts`) measures the browser layout of the preview and draws the same text, rules and logo into the PDF, so the two always match.

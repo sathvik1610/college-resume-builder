@@ -111,7 +111,7 @@ export default function App() {
         <div className="order-1 flex items-center justify-center gap-3.5 sm:order-2">
           {logo && <img src={logo} alt="" className="h-10 w-auto max-w-[3.75rem] rounded-md bg-white object-contain p-1 sm:h-12 sm:max-w-[4.5rem]" />}
           <div className="text-left leading-tight">
-            <h1 className="font-display text-xl font-bold tracking-wide sm:text-[1.55rem]">Resume Builder</h1>
+            <h1 className="font-display text-xl font-bold tracking-tight sm:text-[1.55rem]">Resume Builder</h1>
             <p className="mt-0.5 text-xs tracking-wide opacity-85 sm:text-[13px]">{COLLEGE.name}</p>
           </div>
         </div>
